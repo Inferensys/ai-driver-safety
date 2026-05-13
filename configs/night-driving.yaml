@@ -1,0 +1,16 @@
+thresholds:
+  eye_aspect_ratio: 0.20
+  mouth_aspect_ratio: 0.48
+  head_offset: 0.40
+  missing_face_frames: 12
+  eye_closed_frames: 10
+  drowsy_frames: 40
+  yawn_frames: 7
+vision:
+  provider: auto
+  fallback_to_haar: true
+runtime:
+  alert_cooldown_seconds: 2.5
+report:
+  unsafe_threshold: 0.42
+
