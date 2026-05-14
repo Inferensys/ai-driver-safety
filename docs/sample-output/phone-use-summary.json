@@ -1,0 +1,798 @@
+{
+  "session_id": "clip_4_202605141455-20260514T121645Z",
+  "source": "/Users/prasad/Downloads/Driver performing monitoring act\u2026/clip_4_202605141455.mp4",
+  "duration_seconds": 7.958,
+  "processed_frames": 192,
+  "event_counts": {
+    "distracted": 79,
+    "drowsy": 38,
+    "eyes_closed": 66,
+    "phone_use": 85
+  },
+  "risk_timeline": [
+    {
+      "timestamp": 0.0,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.042,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.083,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.125,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.167,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.208,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.25,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 0.292,
+      "risk_score": 0.068
+    },
+    {
+      "timestamp": 0.333,
+      "risk_score": 0.136
+    },
+    {
+      "timestamp": 0.375,
+      "risk_score": 0.204
+    },
+    {
+      "timestamp": 0.417,
+      "risk_score": 0.272
+    },
+    {
+      "timestamp": 0.458,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.5,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.542,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.583,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.625,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.667,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.708,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.75,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.792,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.833,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.875,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.917,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 0.958,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.0,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.042,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.083,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.125,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.167,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.208,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.25,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.292,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.333,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.375,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.417,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.458,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.5,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.542,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.583,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.625,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.667,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.708,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.75,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.792,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.833,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.875,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.917,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 1.958,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.0,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.042,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.083,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.125,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.167,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.208,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.25,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.292,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.333,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.375,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.417,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.458,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.5,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.542,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.583,
+      "risk_score": 0.34
+    },
+    {
+      "timestamp": 2.625,
+      "risk_score": 0.3555
+    },
+    {
+      "timestamp": 2.667,
+      "risk_score": 0.4218
+    },
+    {
+      "timestamp": 2.708,
+      "risk_score": 0.4755
+    },
+    {
+      "timestamp": 2.75,
+      "risk_score": 0.4854
+    },
+    {
+      "timestamp": 2.792,
+      "risk_score": 0.4954
+    },
+    {
+      "timestamp": 2.833,
+      "risk_score": 0.4877
+    },
+    {
+      "timestamp": 2.875,
+      "risk_score": 0.4293
+    },
+    {
+      "timestamp": 2.917,
+      "risk_score": 0.3835
+    },
+    {
+      "timestamp": 2.958,
+      "risk_score": 0.3814
+    },
+    {
+      "timestamp": 3.0,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.042,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.083,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.125,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.167,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.208,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.25,
+      "risk_score": 0.3793
+    },
+    {
+      "timestamp": 3.292,
+      "risk_score": 0.3814
+    },
+    {
+      "timestamp": 3.333,
+      "risk_score": 0.3835
+    },
+    {
+      "timestamp": 3.375,
+      "risk_score": 0.3813
+    },
+    {
+      "timestamp": 3.417,
+      "risk_score": 0.3777
+    },
+    {
+      "timestamp": 3.458,
+      "risk_score": 0.383
+    },
+    {
+      "timestamp": 3.5,
+      "risk_score": 0.3863
+    },
+    {
+      "timestamp": 3.542,
+      "risk_score": 0.3895
+    },
+    {
+      "timestamp": 3.583,
+      "risk_score": 0.3426
+    },
+    {
+      "timestamp": 3.625,
+      "risk_score": 0.3082
+    },
+    {
+      "timestamp": 3.667,
+      "risk_score": 0.2753
+    },
+    {
+      "timestamp": 3.708,
+      "risk_score": 0.2456
+    },
+    {
+      "timestamp": 3.75,
+      "risk_score": 0.232
+    },
+    {
+      "timestamp": 3.792,
+      "risk_score": 0.274
+    },
+    {
+      "timestamp": 3.833,
+      "risk_score": 0.3158
+    },
+    {
+      "timestamp": 3.875,
+      "risk_score": 0.3572
+    },
+    {
+      "timestamp": 3.917,
+      "risk_score": 0.3973
+    },
+    {
+      "timestamp": 3.958,
+      "risk_score": 0.4301
+    },
+    {
+      "timestamp": 4.0,
+      "risk_score": 0.4512
+    },
+    {
+      "timestamp": 4.042,
+      "risk_score": 0.4664
+    },
+    {
+      "timestamp": 4.083,
+      "risk_score": 0.4742
+    },
+    {
+      "timestamp": 4.125,
+      "risk_score": 0.4824
+    },
+    {
+      "timestamp": 4.167,
+      "risk_score": 0.4893
+    },
+    {
+      "timestamp": 4.208,
+      "risk_score": 0.5
+    },
+    {
+      "timestamp": 4.25,
+      "risk_score": 0.5097
+    },
+    {
+      "timestamp": 4.292,
+      "risk_score": 0.5205
+    },
+    {
+      "timestamp": 4.333,
+      "risk_score": 0.5321
+    },
+    {
+      "timestamp": 4.375,
+      "risk_score": 0.5425
+    },
+    {
+      "timestamp": 4.417,
+      "risk_score": 0.5513
+    },
+    {
+      "timestamp": 4.458,
+      "risk_score": 0.5595
+    },
+    {
+      "timestamp": 4.5,
+      "risk_score": 0.5676
+    },
+    {
+      "timestamp": 4.542,
+      "risk_score": 0.5761
+    },
+    {
+      "timestamp": 4.583,
+      "risk_score": 0.5853
+    },
+    {
+      "timestamp": 4.625,
+      "risk_score": 0.5955
+    },
+    {
+      "timestamp": 4.667,
+      "risk_score": 0.6055
+    },
+    {
+      "timestamp": 4.708,
+      "risk_score": 0.616
+    },
+    {
+      "timestamp": 4.75,
+      "risk_score": 0.7077
+    },
+    {
+      "timestamp": 4.792,
+      "risk_score": 0.7172
+    },
+    {
+      "timestamp": 4.833,
+      "risk_score": 0.7259
+    },
+    {
+      "timestamp": 4.875,
+      "risk_score": 0.7352
+    },
+    {
+      "timestamp": 4.917,
+      "risk_score": 0.7439
+    },
+    {
+      "timestamp": 4.958,
+      "risk_score": 0.7523
+    },
+    {
+      "timestamp": 5.0,
+      "risk_score": 0.7624
+    },
+    {
+      "timestamp": 5.042,
+      "risk_score": 0.7723
+    },
+    {
+      "timestamp": 5.083,
+      "risk_score": 0.7804
+    },
+    {
+      "timestamp": 5.125,
+      "risk_score": 0.7863
+    },
+    {
+      "timestamp": 5.167,
+      "risk_score": 0.7893
+    },
+    {
+      "timestamp": 5.208,
+      "risk_score": 0.7905
+    },
+    {
+      "timestamp": 5.25,
+      "risk_score": 0.7905
+    },
+    {
+      "timestamp": 5.292,
+      "risk_score": 0.7905
+    },
+    {
+      "timestamp": 5.333,
+      "risk_score": 0.7905
+    },
+    {
+      "timestamp": 5.375,
+      "risk_score": 0.7905
+    },
+    {
+      "timestamp": 5.417,
+      "risk_score": 0.7911
+    },
+    {
+      "timestamp": 5.458,
+      "risk_score": 0.7907
+    },
+    {
+      "timestamp": 5.5,
+      "risk_score": 0.8144
+    },
+    {
+      "timestamp": 5.542,
+      "risk_score": 0.8387
+    },
+    {
+      "timestamp": 5.583,
+      "risk_score": 0.8543
+    },
+    {
+      "timestamp": 5.625,
+      "risk_score": 0.864
+    },
+    {
+      "timestamp": 5.667,
+      "risk_score": 0.8822
+    },
+    {
+      "timestamp": 5.708,
+      "risk_score": 0.8764
+    },
+    {
+      "timestamp": 5.75,
+      "risk_score": 0.8699
+    },
+    {
+      "timestamp": 5.792,
+      "risk_score": 0.8722
+    },
+    {
+      "timestamp": 5.833,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 5.875,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 5.917,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 5.958,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.0,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.042,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.083,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.125,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.167,
+      "risk_score": 0.8798
+    },
+    {
+      "timestamp": 6.208,
+      "risk_score": 0.8591
+    },
+    {
+      "timestamp": 6.25,
+      "risk_score": 0.8384
+    },
+    {
+      "timestamp": 6.292,
+      "risk_score": 0.8178
+    },
+    {
+      "timestamp": 6.333,
+      "risk_score": 0.7971
+    },
+    {
+      "timestamp": 6.375,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.417,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.458,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.5,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.542,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.583,
+      "risk_score": 0.7764
+    },
+    {
+      "timestamp": 6.625,
+      "risk_score": 0.6665
+    },
+    {
+      "timestamp": 6.667,
+      "risk_score": 0.4619
+    },
+    {
+      "timestamp": 6.708,
+      "risk_score": 0.3226
+    },
+    {
+      "timestamp": 6.75,
+      "risk_score": 0.1687
+    },
+    {
+      "timestamp": 6.792,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 6.833,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 6.875,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 6.917,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 6.958,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.0,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.042,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.083,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.125,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.167,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.208,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.25,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.292,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.333,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.375,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.417,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.458,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.5,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.542,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.583,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.625,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.667,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.708,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.75,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.792,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.833,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.875,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.917,
+      "risk_score": 0.0
+    },
+    {
+      "timestamp": 7.958,
+      "risk_score": 0.0
+    }
+  ],
+  "longest_unsafe_interval_seconds": 3.958,
+  "confidence_distribution": {
+    "distracted": 1.0,
+    "drowsy": 1.0,
+    "eyes_closed": 1.0,
+    "phone_use": 0.1912
+  },
+  "metrics": {
+    "source_fps": 24.0,
+    "avg_latency_ms": 65.758,
+    "p95_latency_ms": 76.937,
+    "estimated_runtime_fps": 15.21,
+    "face_provider": "mediapipe",
+    "object_provider": "onnx",
+    "fusion_model": "driver-risk-fusion-v1"
+  }
+}

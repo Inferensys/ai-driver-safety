@@ -1,0 +1,16 @@
+thresholds:
+  eye_aspect_ratio: 0.21
+  mouth_aspect_ratio: 0.52
+  missing_face_frames: 10
+vision:
+  provider: auto
+  fallback_to_haar: true
+  process_every_n_frames: 2
+object_detector:
+  enabled: false
+runtime:
+  output_fps: 15
+  alert_cooldown_seconds: 2.0
+report:
+  timeline_stride_frames: 5
+
