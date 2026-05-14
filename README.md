@@ -1,5 +1,7 @@
 # AI Driver Safety
 
+![Inferensys Driver Monitoring](docs/cover.svg)
+
 AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, phone use, and driver-not-visible distraction events.
 
 The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path first with real human cabin recordings, then keeps sensor and car-data adapters ready for dataset validation.
@@ -212,3 +214,5 @@ pytest
 ## Safety Note
 
 Use this for research, demos, and prototypes. Do not use it as the only safety layer in a real vehicle.
+
+![Inferensys CTA](docs/cta.svg)

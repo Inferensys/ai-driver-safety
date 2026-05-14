@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 from typing import cast
 
@@ -16,6 +17,11 @@ STATE_COLORS = {
     DriverState.DISTRACTED: (42, 42, 238),
     DriverState.PHONE_USE: (42, 42, 238),
 }
+
+LOGO_PATHS = (
+    Path("docs/logo-overlay.png"),
+    Path(__file__).resolve().parents[2] / "docs" / "logo-overlay.png",
+)
 
 
 class AnnotatedVideoWriter:
@@ -39,20 +45,11 @@ def draw_overlay(processed: ProcessedFrame) -> np.ndarray:
     h, w = frame.shape[:2]
     state_color = STATE_COLORS.get(processed.state, (255, 255, 255))
     _draw_panel(frame, 12, 12, 318, 136, alpha=0.72)
-    cv2.putText(
-        frame,
-        "AI DRIVER SAFETY",
-        (28, 42),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.72,
-        (246, 248, 248),
-        2,
-        cv2.LINE_AA,
-    )
+    _draw_brand(frame, 26, 25)
     cv2.putText(
         frame,
         processed.state.value.replace("_", " ").upper(),
-        (28, 76),
+        (28, 82),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.62,
         state_color,
@@ -62,7 +59,7 @@ def draw_overlay(processed: ProcessedFrame) -> np.ndarray:
     cv2.putText(
         frame,
         f"Risk {processed.risk_score:.2f}  {processed.latency_ms:.1f} ms",
-        (28, 108),
+        (28, 114),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.54,
         (212, 220, 220),
@@ -107,6 +104,56 @@ def _draw_panel(frame: np.ndarray, x: int, y: int, w: int, h: int, *, alpha: flo
     overlay = frame.copy()
     cv2.rectangle(overlay, (x, y), (x + w, y + h), (18, 22, 23), -1)
     cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+
+
+def _draw_brand(frame: np.ndarray, x: int, y: int) -> None:
+    logo = _load_logo()
+    if logo is None:
+        cv2.putText(
+            frame,
+            "AI DRIVER SAFETY",
+            (28, 42),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.72,
+            (246, 248, 248),
+            2,
+            cv2.LINE_AA,
+        )
+        return
+    logo_h, logo_w = logo.shape[:2]
+    scale = min(216 / logo_w, 44 / logo_h, 1.0)
+    if scale < 1.0:
+        logo = cv2.resize(
+            logo,
+            (int(logo_w * scale), int(logo_h * scale)),
+            interpolation=cv2.INTER_AREA,
+        )
+    _blend_rgba(frame, logo, x, y)
+
+
+@lru_cache(maxsize=1)
+def _load_logo() -> np.ndarray | None:
+    for path in LOGO_PATHS:
+        if path.exists():
+            logo = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+            if logo is not None and logo.shape[2] == 4:
+                return cast(np.ndarray, logo)
+    return None
+
+
+def _blend_rgba(frame: np.ndarray, overlay: np.ndarray, x: int, y: int) -> None:
+    h, w = overlay.shape[:2]
+    frame_h, frame_w = frame.shape[:2]
+    if x >= frame_w or y >= frame_h:
+        return
+    w = min(w, frame_w - x)
+    h = min(h, frame_h - y)
+    if w <= 0 or h <= 0:
+        return
+    logo_rgb = overlay[:h, :w, :3].astype(np.float32)
+    alpha = overlay[:h, :w, 3:4].astype(np.float32) / 255.0
+    region = frame[y : y + h, x : x + w].astype(np.float32)
+    frame[y : y + h, x : x + w] = (alpha * logo_rgb + (1.0 - alpha) * region).astype(np.uint8)
 
 
 def _draw_signal_bars(

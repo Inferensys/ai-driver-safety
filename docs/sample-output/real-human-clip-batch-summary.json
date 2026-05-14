@@ -15,9 +15,9 @@
       "longest_unsafe_interval_seconds": 1.833,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 8.951,
-        "p95_latency_ms": 10.658,
-        "estimated_runtime_fps": 111.72,
+        "avg_latency_ms": 8.924,
+        "p95_latency_ms": 9.831,
+        "estimated_runtime_fps": 112.06,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -39,9 +39,9 @@
       "longest_unsafe_interval_seconds": 3.417,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 8.085,
-        "p95_latency_ms": 9.499,
-        "estimated_runtime_fps": 123.68,
+        "avg_latency_ms": 8.205,
+        "p95_latency_ms": 9.489,
+        "estimated_runtime_fps": 121.87,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -62,9 +62,9 @@
       "longest_unsafe_interval_seconds": 1.333,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 7.327,
-        "p95_latency_ms": 12.83,
-        "estimated_runtime_fps": 136.48,
+        "avg_latency_ms": 6.421,
+        "p95_latency_ms": 9.122,
+        "estimated_runtime_fps": 155.75,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -85,9 +85,9 @@
       "longest_unsafe_interval_seconds": 2.542,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 6.841,
-        "p95_latency_ms": 10.827,
-        "estimated_runtime_fps": 146.17,
+        "avg_latency_ms": 6.222,
+        "p95_latency_ms": 9.05,
+        "estimated_runtime_fps": 160.71,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
