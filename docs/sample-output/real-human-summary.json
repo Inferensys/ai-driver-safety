@@ -1,5 +1,5 @@
 {
-  "session_id": "clip_2_202605141455-20260514T103435Z",
+  "session_id": "clip_2_202605141455-20260514T105958Z",
   "source": "/Users/prasad/Downloads/Driver performing monitoring act\u2026/clip_2_202605141455.mp4",
   "duration_seconds": 7.958,
   "processed_frames": 192,
@@ -788,9 +788,9 @@
   },
   "metrics": {
     "source_fps": 24.0,
-    "avg_latency_ms": 8.205,
-    "p95_latency_ms": 9.489,
-    "estimated_runtime_fps": 121.87,
+    "avg_latency_ms": 7.936,
+    "p95_latency_ms": 9.304,
+    "estimated_runtime_fps": 126.0,
     "face_provider": "mediapipe",
     "object_provider": "none",
     "fusion_model": "driver-risk-fusion-v1"

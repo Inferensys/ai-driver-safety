@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a runtime, model, dataset, or documentation issue
+about: Report a runtime, model, demo, or documentation issue
 title: ""
 labels: bug
 assignees: ""

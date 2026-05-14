@@ -183,7 +183,6 @@ def _write_timeline(
         ("yawning", (230, 158, 48)),
         ("distracted", (91, 134, 112)),
         ("phone_use", (130, 95, 171)),
-        ("face_missing", (112, 112, 112)),
     ]
     timeline_left = 190
     timeline_right = width - 72
@@ -242,8 +241,8 @@ def _write_source_metadata(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "artifacts": {key: str(path) for key, path in artifacts.items()},
         "policy": (
-            "These README assets must come from an approved human recording or a dataset whose "
-            "terms allow public derived demo media."
+            "These README assets must come from an approved human recording whose terms allow "
+            "public derived demo media."
         ),
     }
     output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")

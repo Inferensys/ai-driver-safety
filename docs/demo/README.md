@@ -1,8 +1,6 @@
 # Demo Assets
 
-README demo assets must come from an approved real human driver/yawning clip. Generated cabin visuals are intentionally not used as public proof.
-
-Preferred source: NITYMED after dataset access approval. Use YawDD or a consented recording if the clip allows public derived media.
+README demo assets must come from project-approved human cabin recordings only.
 
 Generate real demo assets locally:
 
@@ -47,4 +45,4 @@ for n in 1 2 3 4; do
 done
 ```
 
-Do not commit raw dataset videos. Commit only short derived demo assets when the source terms allow public display and attribution is recorded.
+Do not commit raw source videos. Commit only short derived demo assets when the source terms allow public display and attribution is recorded.

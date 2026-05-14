@@ -39,24 +39,6 @@ class NoopObjectDetector:
         return []
 
 
-class FixtureObjectDetector:
-    provider = "fixture"
-
-    def detect(self, packet: FramePacket) -> list[ObjectObservation]:
-        phase = packet.timestamp % 54
-        if 38 <= phase < 45:
-            h, w = packet.frame.shape[:2]
-            return [
-                ObjectObservation(
-                    label="phone",
-                    confidence=0.88,
-                    bbox=(int(w * 0.63), int(h * 0.44), int(w * 0.09), int(h * 0.17)),
-                    provider=self.provider,
-                )
-            ]
-        return []
-
-
 class OnnxObjectDetector:
     provider = "onnx"
 
@@ -91,8 +73,6 @@ def create_object_detector(config: DriverSafetyConfig) -> ObjectDetector:
     obj_config = config.object_detector
     if not obj_config.enabled or obj_config.provider == "none":
         return NoopObjectDetector()
-    if obj_config.provider == "fixture":
-        return FixtureObjectDetector()
     if obj_config.provider == "onnx":
         return OnnxObjectDetector(Path(obj_config.model_path), Path(obj_config.labels_path))
     raise ValueError(f"Unsupported object detector provider: {obj_config.provider}")

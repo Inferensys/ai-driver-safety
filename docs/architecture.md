@@ -14,7 +14,7 @@ FrameSource -> DriverSafetyPipeline -> DetectionEvent[] -> Driver Risk Fusion ->
 ## Components
 
 - `driver_safety.core`: typed events, driver states, risk scoring, smoothing, alert cooldowns.
-- `driver_safety.vision`: detector interfaces, MediaPipe adapter, Haar fallback, test-fixture detector, signal metrics, optional ONNX object detection.
+- `driver_safety.vision`: detector interfaces, MediaPipe adapter, Haar fallback, signal metrics, optional ONNX object detection.
 - `driver_safety.io`: video/webcam sources and annotated overlay writer.
 - `driver_safety.runtime`: video and webcam loops.
 - `driver_safety.reporting`: JSON, CSV, and HTML exports.
@@ -26,7 +26,7 @@ The runtime depends on interfaces instead of one model implementation:
 - `FaceLandmarkDetector.detect(frame) -> FaceObservation[]`
 - `ObjectDetector.detect(frame) -> ObjectObservation[]`
 
-The default config uses `vision.provider: auto`, which attempts MediaPipe Face Landmarker when the model is present, then falls back to OpenCV Haar face detection for basic face presence. The generated-frame detector is only for deterministic tests.
+The default config uses `vision.provider: auto`, which attempts MediaPipe Face Landmarker when the model is present, then falls back to OpenCV Haar face detection for basic face presence.
 
 ## Event Model
 

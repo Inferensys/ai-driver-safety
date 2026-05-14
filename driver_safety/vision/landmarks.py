@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Protocol
 
 import cv2
-import numpy as np
 
 from driver_safety.config import DriverSafetyConfig
 from driver_safety.core.models import FramePacket
@@ -39,27 +38,6 @@ class ModelNotAvailableError(RuntimeError):
     pass
 
 
-class FixtureFaceLandmarkDetector:
-    provider = "fixture"
-
-    def detect(self, packet: FramePacket) -> list[FaceObservation]:
-        frame = packet.frame
-        h, w = frame.shape[:2]
-        scenario = _scenario_for_timestamp(packet.timestamp)
-        if scenario == "driver_absent":
-            return []
-        face_w = int(w * 0.26)
-        face_h = int(h * 0.42)
-        x_offset = int(w * 0.22 if scenario == "distracted" else w * 0.0)
-        cx = w // 2 + x_offset
-        cy = int(h * 0.42)
-        bbox = (cx - face_w // 2, cy - face_h // 2, face_w, face_h)
-        eye_open = scenario != "eyes_closed"
-        mouth_open = scenario == "yawning"
-        landmarks = _fixture_landmarks(cx, cy, eye_open=eye_open, mouth_open=mouth_open)
-        return [FaceObservation(bbox=bbox, landmarks=landmarks, provider=self.provider)]
-
-
 class HaarFaceDetector:
     provider = "haar"
 
@@ -82,7 +60,7 @@ class HaarFaceDetector:
             observations.append(
                 FaceObservation(
                     bbox=(int(x), int(y), int(w), int(h)),
-                    landmarks=_fixture_landmarks(
+                    landmarks=_approximate_face_landmarks(
                         cx, cy, eye_open=True, mouth_open=False, scale=w / 150
                     ),
                     provider=self.provider,
@@ -147,8 +125,6 @@ class MediaPipeFaceLandmarker:
 
 def create_face_detector(config: DriverSafetyConfig) -> FaceLandmarkDetector:
     provider = config.vision.provider.lower()
-    if provider == "fixture":
-        return FixtureFaceLandmarkDetector()
     if provider in {"mediapipe", "auto"}:
         try:
             return MediaPipeFaceLandmarker(Path(config.vision.face_landmarker_model))
@@ -164,7 +140,7 @@ def _pick(points: list[Point], indexes: list[int]) -> list[Point]:
     return [points[index] for index in indexes if index < len(points)]
 
 
-def _fixture_landmarks(
+def _approximate_face_landmarks(
     cx: int,
     cy: int,
     *,
@@ -204,68 +180,3 @@ def _eye_points(cx: float, cy: float, half_w: float, vertical: float) -> list[Po
         (cx + half_w / 2, cy + vertical),
         (cx - half_w / 2, cy + vertical),
     ]
-
-
-def _scenario_for_timestamp(timestamp: float) -> str:
-    phase = timestamp % 54
-    if 8 <= phase < 13:
-        return "eyes_closed"
-    if 18 <= phase < 23:
-        return "yawning"
-    if 29 <= phase < 35:
-        return "distracted"
-    if 47 <= phase < 51:
-        return "driver_absent"
-    return "attentive"
-
-
-def draw_fixture_driver_frame(width: int, height: int, timestamp: float) -> np.ndarray:
-    frame = np.zeros((height, width, 3), dtype=np.uint8)
-    frame[:] = (28, 31, 32)
-    cv2.rectangle(frame, (0, int(height * 0.58)), (width, height), (22, 24, 25), -1)
-    cv2.rectangle(
-        frame,
-        (int(width * 0.08), int(height * 0.05)),
-        (int(width * 0.92), int(height * 0.52)),
-        (62, 68, 72),
-        -1,
-    )
-    cv2.line(
-        frame,
-        (int(width * 0.5), int(height * 0.08)),
-        (int(width * 0.48), int(height * 0.52)),
-        (235, 190, 82),
-        3,
-    )
-    cv2.line(
-        frame,
-        (int(width * 0.5), int(height * 0.08)),
-        (int(width * 0.54), int(height * 0.52)),
-        (235, 190, 82),
-        3,
-    )
-    cv2.circle(frame, (int(width * 0.5), int(height * 0.73)), int(width * 0.12), (12, 12, 13), 16)
-    cv2.putText(
-        frame,
-        "AI Driver Safety test fixture",
-        (24, height - 24),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.7,
-        (210, 218, 218),
-        2,
-        cv2.LINE_AA,
-    )
-    packet = FramePacket(frame=frame, timestamp=timestamp, frame_index=int(timestamp * 24))
-    detector = FixtureFaceLandmarkDetector()
-    observations = detector.detect(packet)
-    if not observations:
-        return frame
-    obs = observations[0]
-    x, y, w, h = obs.bbox
-    cv2.ellipse(frame, (x + w // 2, y + h // 2), (w // 2, h // 2), 0, 0, 360, (92, 126, 150), -1)
-    for eye in ("left_eye", "right_eye"):
-        pts = np.array(obs.landmarks[eye], dtype=np.int32)
-        cv2.polylines(frame, [pts], True, (245, 245, 235), 2)
-    mouth = np.array(obs.landmarks["mouth"], dtype=np.int32)
-    cv2.polylines(frame, [mouth], True, (80, 90, 210), 2)
-    return frame

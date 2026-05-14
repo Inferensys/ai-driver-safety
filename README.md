@@ -2,15 +2,15 @@
 
 ![Inferensys Driver Monitoring](docs/cover.svg)
 
-AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, phone use, and driver-not-visible distraction events.
+AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use.
 
-The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path first with real human cabin recordings, then keeps sensor and car-data adapters ready for dataset validation.
+The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path with real human cabin recordings and keeps the sensor/vehicle inputs as algorithm extension points.
 
 > Research and demo software only. This is not certified automotive safety software.
 
 ## Real Demo
 
-The README demo uses approved human cabin clips. No generated cabin animation is used as public proof.
+The README demo uses approved human cabin clips only.
 
 ![AI Driver Safety real human demo](docs/demo/real-human-demo.gif)
 
@@ -18,7 +18,7 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 
 | Source | Duration | Frames | Detector | Result |
 | --- | ---: | ---: | --- | --- |
-| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `124 FPS` |
+| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `126 FPS` |
 
 **Artifacts**
 
@@ -43,7 +43,7 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 
 - A real driver video goes in.
 - The system writes an annotated MP4, event JSON, CSV, summary JSON, and HTML report.
-- The report shows when the driver had eye closure, yawning, drowsy windows, phone/object events, or no visible face.
+- The report shows when the driver had eye closure, yawning, drowsy windows, distracted intervals, or phone/object events.
 - The same event model accepts physiological drowsiness data and real vehicle telemetry.
 - The final output is one risk timeline, not a pile of disconnected demos.
 
@@ -52,7 +52,7 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 The scorer is `driver-risk-fusion-v1`.
 
 1. **Vision evidence**: MediaPipe landmarks produce eye aspect ratio, mouth aspect ratio, head offset, face presence, and optional ONNX phone/object detections.
-2. **Temporal gating**: frame counters prevent one noisy frame from becoming an alert. Eye closure, yawn, distraction, and driver-not-visible states must persist for configured windows.
+2. **Temporal gating**: frame counters prevent one noisy frame from becoming an alert. Eye closure, yawn, and distraction states must persist for configured windows.
 3. **Signal smoothing**: raw per-frame signals are smoothed before risk scoring.
 4. **Evidence fusion**: signals are combined with a noisy-OR rule, so multiple moderate cues can raise risk without naive addition.
 5. **Cross-signal boosts**: risk increases when combinations matter, such as drowsy + eyes closed, drowsy + yawning, visual fatigue + physiological fatigue, visual fatigue + vehicle risk, or distraction + short time-to-collision.
@@ -64,7 +64,7 @@ This keeps the original fuzzy-logic concept practical. The system can show why r
 
 **Deep learning based driver monitoring system for activity and object recognition.**
 
-Passenger cars need cabin intelligence, not only road perception. A driver monitoring system can read observable cabin cues and vehicle signals to help decide whether the driver is ready to take control, distracted, fatigued, or missing from the camera view.
+Passenger cars need cabin intelligence, not only road perception. A driver monitoring system can read observable cabin cues and vehicle signals to help decide whether the driver is ready to take control, distracted, or fatigued.
 
 The original idea had three parts:
 
@@ -72,7 +72,7 @@ The original idea had three parts:
 - **Physiological sensing**: heart-rate or wearable-style signals for fatigue and medical-risk cues.
 - **Driving style AI**: accelerations, braking, turns, speed, lane drift, time-to-collision, tailgating, and road-context thresholds scored with fuzzy logic.
 
-This repo now implements the first production-shaped path: video analysis, event extraction, fusion scoring, report generation, and dataset adapters.
+This repo now implements the first production-shaped path: video analysis, event extraction, fusion scoring, report generation, and demo artifacts from real human recordings.
 
 ## Run It
 
@@ -124,7 +124,6 @@ ai-driver-safety run --source webcam --config configs/default.yaml
 ai-driver-safety analyze --video data/approved-demo/driver-yawning.mp4 --out runs/real-human-demo
 ai-driver-safety run --source webcam --config configs/default.yaml
 ai-driver-safety report --run runs/real-human-demo --format html,json,csv
-ai-driver-safety datasets intelligence
 ```
 
 ## Python API
@@ -147,41 +146,23 @@ driver_safety/
   io/          video/webcam sources and annotated video writer
   runtime/     analyze/run loops and latency metrics
   reporting/   JSON, CSV, HTML report exports
-  datasets/    NITYMED, YawDD, DD-Database, UAH-DriveSet adapters
-configs/       demo, night, edge CPU, and internal fixture configs
-docs/          architecture, datasets, edge notes, demo assets
+configs/       default, night-driving, and edge CPU profiles
+docs/          architecture, edge notes, demo assets
 legacy/        original webcam scripts, Haar assets, heartbeat sketch
 ```
 
-## Real Dataset Work
+## Evidence In This Repo
 
-Raw dataset media stays under `data/` and out of git. The repo commits analysis artifacts, charts, and metadata.
+The current proof is intentionally narrow: four approved real human cabin clips supplied by the project owner. No other source media is used in the committed demo.
 
-![Real dataset intelligence](docs/screenshots/dataset-intelligence.png)
+Committed evidence:
 
-| Dataset | Why it matters here | Signals used by this repo | Output |
-| --- | --- | --- | --- |
-| NITYMED | Real in-car yawning and microsleep video for README-grade demos | `yawning`, `eyes_closed`, `distracted`, microsleep review windows | annotated GIF/MP4 after access approval |
-| YawDD | Real human yawning benchmark across in-car faces, eyewear, and lighting | `mouth_aspect_ratio`, `yawning`, face tracking quality | local annotated video and event timeline |
-| DD-Database | Physiological drowsiness data from EEG, EOG, ECG, and annotations | `sensor_drowsiness`, EOG eye-movement proxy, ECG heart-rate proxy | `sensor_events.json`, `sensor_summary.json` |
-| UAH-DriveSet | Real car telemetry for driving-style risk | `lane_drift`, `short_time_to_collision`, `hard_maneuver`, `speeding` | `vehicle_events.json`, `vehicle_summary.json` |
-
-Generate the project-level dataset analysis:
-
-```bash
-ai-driver-safety datasets intelligence \
-  --out docs/sample-output/real-dataset-intelligence.json \
-  --markdown docs/sample-output/real-dataset-intelligence.md \
-  --chart docs/screenshots/dataset-intelligence.png
-```
-
-Dataset artifacts:
-
-- [Dataset intelligence JSON](docs/sample-output/real-dataset-intelligence.json)
-- [Dataset intelligence report](docs/sample-output/real-dataset-intelligence.md)
-- [DD-Database Dryad file index](docs/sample-output/dd-database-dryad-files.json)
-
-See [docs/datasets.md](docs/datasets.md) for dataset-specific commands and media rules.
+- `docs/demo/real-human-demo.mp4`
+- `docs/demo/real-human-demo.gif`
+- `docs/demo/real-human-clip-1.gif` through `docs/demo/real-human-clip-4.gif`
+- `docs/sample-output/real-human-events.json`
+- `docs/sample-output/real-human-summary.json`
+- `docs/sample-output/real-human-clip-batch-summary.json`
 
 ## Models
 

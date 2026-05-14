@@ -3,7 +3,7 @@
   "source_url": null,
   "license_note": "User supplied clip for AI Driver Safety README/demo use",
   "source_video": "/Users/prasad/Downloads/Driver performing monitoring act\u2026/clip_2_202605141455.mp4",
-  "generated_at": "2026-05-14T10:34:37.446644+00:00",
+  "generated_at": "2026-05-14T11:00:00.696396+00:00",
   "artifacts": {
     "readme_video": "docs/demo/real-human-demo.mp4",
     "readme_gif": "docs/demo/real-human-demo.gif",
@@ -13,5 +13,5 @@
     "readme_summary": "docs/sample-output/real-human-summary.json",
     "source_metadata": "docs/sample-output/real-human-demo-source.json"
   },
-  "policy": "These README assets must come from an approved human recording or a dataset whose terms allow public derived demo media."
+  "policy": "These README assets must come from an approved human recording whose terms allow public derived demo media."
 }

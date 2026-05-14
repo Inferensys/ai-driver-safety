@@ -66,7 +66,7 @@ class DriverSafetyPipeline:
                         DriverState.DISTRACTED,
                         1.0,
                         Severity.WARNING,
-                        "Driver not visible; marked distracted",
+                        "Distracted: driver not visible in cabin feed",
                     )
                 )
         else:

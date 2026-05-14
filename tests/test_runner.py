@@ -6,15 +6,15 @@ import numpy as np
 from driver_safety.config import load_config
 from driver_safety.core.models import DriverState, FramePacket
 from driver_safety.runtime.runner import analyze_video
-from driver_safety.vision.landmarks import FaceObservation, draw_fixture_driver_frame
+from driver_safety.vision.landmarks import FaceObservation
 from driver_safety.vision.pipeline import DriverSafetyPipeline
 
 
 def test_analyze_video_writes_artifacts(tmp_path: Path) -> None:
     video = tmp_path / "demo.mp4"
     _write_video(video)
-    config = load_config(Path("configs/test-fixture.yaml"))
-    config.runtime.max_frames = 160
+    config = load_config(Path("configs/default.yaml"))
+    config.runtime.max_frames = 40
     out = tmp_path / "run"
     artifacts = analyze_video(video, out, config)
     assert artifacts["events"].exists()
@@ -40,8 +40,9 @@ def test_missing_driver_view_is_labeled_distracted() -> None:
 def _write_video(path: Path) -> None:
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 24, (320, 180))
     assert writer.isOpened()
-    for index in range(180):
-        writer.write(draw_fixture_driver_frame(320, 180, index / 24))
+    frame = np.full((180, 320, 3), 28, dtype=np.uint8)
+    for _ in range(48):
+        writer.write(frame)
     writer.release()
 
 
