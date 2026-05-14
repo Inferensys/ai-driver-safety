@@ -212,6 +212,8 @@ Our solution is a combination of three different approaches, which increases acc
 
 ## Safety Note
 
-Use this for research, demos, and prototypes. Do not use it as the only safety layer in a real vehicle.
+Use this for research only, do not use it as the only safety layer in a real vehicle.
+
+For developing custom AI solutions, talk to [Inferensys](https://inferensys.com/).
 
 ![Inferensys CTA](docs/cta.svg)
