@@ -8,6 +8,7 @@ from driver_safety.datasets.dd_database import (
     read_dd_annotation_events,
     write_dd_sensor_events,
 )
+from driver_safety.datasets.intelligence import write_dataset_intelligence_artifacts
 from driver_safety.datasets.uah_driveset import build_uah_manifest, write_uah_vehicle_events
 from driver_safety.datasets.yawdd import build_yawdd_manifest
 
@@ -80,3 +81,31 @@ def test_uah_manifest_and_vehicle_sensor_events(tmp_path: Path) -> None:
         "hard_maneuver",
         "speeding",
     }
+
+
+def test_dataset_intelligence_artifacts_include_project_signals(tmp_path: Path) -> None:
+    dd_index = tmp_path / "dd-index.json"
+    dd_index.write_text(
+        json.dumps(
+            {
+                "files": [
+                    {"filename": "01M_1_annotations.edf", "size_bytes": 1200},
+                    {"filename": "01M_1.edf", "size_bytes": 12000000},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    artifacts = write_dataset_intelligence_artifacts(
+        tmp_path / "intelligence.json",
+        output_markdown=tmp_path / "intelligence.md",
+        output_chart=tmp_path / "intelligence.png",
+        dd_file_index=dd_index,
+    )
+    payload = json.loads(artifacts["json"].read_text(encoding="utf-8"))
+
+    assert artifacts["markdown"].exists()
+    assert artifacts["chart"].exists()
+    assert payload["datasets"][0]["key"] == "yawdd"
+    assert "sensor_drowsiness" in payload["datasets"][1]["project_signals"]

@@ -15,6 +15,7 @@ from driver_safety.datasets import (
     build_uah_manifest,
     build_yawdd_manifest,
     fetch_dd_dryad_file_index,
+    write_dataset_intelligence_artifacts,
     write_dd_sensor_events,
     write_uah_vehicle_events,
 )
@@ -210,6 +211,36 @@ def uah_events(
 ) -> None:
     """Export vehicle-risk events from UAH-DriveSet telemetry files."""
     artifacts = write_uah_vehicle_events(input_dir, out)
+    for name, path in artifacts.items():
+        console.print(f"{name}: {path}")
+
+
+@datasets_app.command("intelligence")
+def dataset_intelligence(
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "docs/sample-output/real-dataset-intelligence.json"
+    ),
+    markdown: Annotated[Path | None, typer.Option("--markdown", file_okay=True)] = Path(
+        "docs/sample-output/real-dataset-intelligence.md"
+    ),
+    chart: Annotated[Path | None, typer.Option("--chart", file_okay=True)] = Path(
+        "docs/screenshots/dataset-intelligence.png"
+    ),
+    dd_file_index: Annotated[Path | None, typer.Option("--dd-file-index", dir_okay=False)] = Path(
+        "docs/sample-output/dd-database-dryad-files.json"
+    ),
+    yawdd_manifest: Annotated[Path | None, typer.Option("--yawdd-manifest", dir_okay=False)] = None,
+    uah_manifest: Annotated[Path | None, typer.Option("--uah-manifest", dir_okay=False)] = None,
+) -> None:
+    """Generate project-specific intelligence analysis for the real validation datasets."""
+    artifacts = write_dataset_intelligence_artifacts(
+        out,
+        output_markdown=markdown,
+        output_chart=chart,
+        dd_file_index=dd_file_index if dd_file_index and dd_file_index.exists() else None,
+        yawdd_manifest=yawdd_manifest if yawdd_manifest and yawdd_manifest.exists() else None,
+        uah_manifest=uah_manifest if uah_manifest and uah_manifest.exists() else None,
+    )
     for name, path in artifacts.items():
         console.print(f"{name}: {path}")
 

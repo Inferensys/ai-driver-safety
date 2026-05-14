@@ -12,6 +12,22 @@ The revamp uses three real dataset tracks:
 | Physiological drowsiness sensors | DD-Database | Drowsiness events from EEG, EOG, ECG, and annotations | `ai-driver-safety datasets prepare-dd` and `ai-driver-safety datasets dd-events` |
 | Car sensor telemetry | UAH-DriveSet | Vehicle-risk events from accelerometer, GPS, lane, and vehicle telemetry | `ai-driver-safety datasets prepare-uah` and `ai-driver-safety datasets uah-events` |
 
+Generate the repository-level intelligence report:
+
+```bash
+ai-driver-safety datasets intelligence \
+  --out docs/sample-output/real-dataset-intelligence.json \
+  --markdown docs/sample-output/real-dataset-intelligence.md \
+  --chart docs/screenshots/dataset-intelligence.png
+```
+
+The generated report is not just a dataset list. It maps each dataset to the project aims:
+
+- YawDD validates the cabin-camera yawn/mouth path.
+- DD-Database validates physiological drowsiness and the original heart-rate/sensor path.
+- UAH-DriveSet validates real driving-style and fuzzy vehicle-risk scoring.
+- The fused result is one `SessionSummary` timeline that can combine visual, physiological, and vehicle-risk events.
+
 ## Human Yawning Video
 
 ### YawDD
