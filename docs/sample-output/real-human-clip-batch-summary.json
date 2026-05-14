@@ -81,14 +81,14 @@
         "distracted": 79,
         "drowsy": 38,
         "eyes_closed": 66,
-        "phone_use": 8
+        "phone_use": 85
       },
-      "longest_unsafe_interval_seconds": 2.542,
+      "longest_unsafe_interval_seconds": 3.958,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 66.961,
-        "p95_latency_ms": 78.84,
-        "estimated_runtime_fps": 14.93,
+        "avg_latency_ms": 65.758,
+        "p95_latency_ms": 76.937,
+        "estimated_runtime_fps": 15.21,
         "face_provider": "mediapipe",
         "object_provider": "onnx",
         "fusion_model": "driver-risk-fusion-v1"

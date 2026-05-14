@@ -2,8 +2,9 @@ thresholds:
   eye_aspect_ratio: 0.22
   mouth_aspect_ratio: 0.50
   head_offset: 0.42
-  phone_confidence: 0.30
-  phone_use_frames: 1
+  phone_confidence: 0.05
+  phone_use_frames: 2
+  phone_hold_frames: 12
   missing_face_frames: 8
   eye_closed_frames: 8
   drowsy_frames: 36
@@ -20,7 +21,7 @@ object_detector:
   provider: onnx
   model_path: models/driver-objects.onnx
   labels_path: models/driver-objects.labels
-  confidence_threshold: 0.25
+  confidence_threshold: 0.03
   iou_threshold: 0.45
   phone_labels:
     - cell phone

@@ -57,6 +57,30 @@ def test_phone_use_is_temporally_gated() -> None:
     assert [event for event in second.events if event.signal == "phone_use"]
 
 
+def test_phone_use_persists_through_short_detector_dropouts() -> None:
+    config = load_config(Path("configs/default.yaml"))
+    config.thresholds.missing_face_frames = 999
+    config.thresholds.phone_confidence = 0.5
+    config.thresholds.phone_use_frames = 1
+    config.thresholds.phone_hold_frames = 2
+    pipeline = DriverSafetyPipeline(
+        config,
+        face_detector=_NoFaceDetector(),
+        object_detector=_OneFramePhoneObjectDetector(),
+    )
+    frame = np.zeros((180, 320, 3), dtype=np.uint8)
+
+    first = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.0, frame_index=0))
+    second = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.1, frame_index=1))
+    third = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.2, frame_index=2))
+    fourth = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.3, frame_index=3))
+
+    assert [event for event in first.events if event.signal == "phone_use"]
+    assert [event for event in second.events if event.signal == "phone_use"]
+    assert [event for event in third.events if event.signal == "phone_use"]
+    assert not [event for event in fourth.events if event.signal == "phone_use"]
+
+
 def _write_video(path: Path) -> None:
     writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 24, (320, 180))
     assert writer.isOpened()
@@ -77,6 +101,26 @@ class _PhoneObjectDetector:
     provider = "test"
 
     def detect(self, packet: FramePacket) -> list[ObjectObservation]:
+        return [
+            ObjectObservation(
+                label="cell phone",
+                confidence=0.8,
+                bbox=(120, 90, 32, 42),
+                provider=self.provider,
+            )
+        ]
+
+
+class _OneFramePhoneObjectDetector:
+    provider = "test"
+
+    def __init__(self) -> None:
+        self._calls = 0
+
+    def detect(self, packet: FramePacket) -> list[ObjectObservation]:
+        self._calls += 1
+        if self._calls > 1:
+            return []
         return [
             ObjectObservation(
                 label="cell phone",

@@ -19,7 +19,11 @@ from driver_safety.vision.metrics import (
     horizontal_head_offset,
     mouth_aspect_ratio,
 )
-from driver_safety.vision.object_detector import ObjectDetector, create_object_detector
+from driver_safety.vision.object_detector import (
+    ObjectDetector,
+    ObjectObservation,
+    create_object_detector,
+)
 
 
 class DriverSafetyPipeline:
@@ -41,6 +45,8 @@ class DriverSafetyPipeline:
         self._distracted_counter = 0
         self._missing_face_counter = 0
         self._phone_counter = 0
+        self._phone_hold_counter = 0
+        self._last_phone: ObjectObservation | None = None
 
     def process_frame(self, packet: FramePacket) -> ProcessedFrame:
         started = perf_counter()
@@ -81,6 +87,7 @@ class DriverSafetyPipeline:
         object_observations = self.object_detector.detect(packet)
         phone_labels = {label.lower() for label in self.config.object_detector.phone_labels}
         best_phone = None
+        display_objects: list[ObjectObservation] = []
         for obj in object_observations:
             if (
                 obj.label.lower() in phone_labels
@@ -90,8 +97,17 @@ class DriverSafetyPipeline:
                 best_phone = obj
 
         if best_phone is None:
-            self._phone_counter = 0
+            if self._phone_hold_counter > 0 and self._last_phone is not None:
+                self._phone_hold_counter -= 1
+                best_phone = self._last_phone
+            else:
+                self._phone_counter = 0
+                self._last_phone = None
         else:
+            self._last_phone = best_phone
+            self._phone_hold_counter = self.config.thresholds.phone_hold_frames
+
+        if best_phone is not None:
             self._phone_counter += 1
             phone_gate = min(
                 1.0, self._phone_counter / max(1, self.config.thresholds.phone_use_frames)
@@ -107,9 +123,14 @@ class DriverSafetyPipeline:
                         Severity.CRITICAL,
                         "Phone use detected while driving",
                         bbox=best_phone.bbox,
-                        metadata={"label": best_phone.label, "provider": best_phone.provider},
+                        metadata={
+                            "label": best_phone.label,
+                            "provider": best_phone.provider,
+                            "tracking": "raw" if best_phone in object_observations else "held",
+                        },
                     )
                 )
+                display_objects.append(best_phone)
 
         signals = self.smoother.update(raw_signals)
         risk_score = self.scorer.score(signals)
@@ -124,7 +145,7 @@ class DriverSafetyPipeline:
             latency_ms=latency_ms,
             face_bbox=face_bbox,
             landmarks=landmarks,
-            objects=[obj.to_dict() for obj in object_observations],
+            objects=[obj.to_dict() for obj in display_objects],
         )
 
     def _face_signals(

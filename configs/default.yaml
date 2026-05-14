@@ -4,6 +4,7 @@ thresholds:
   head_offset: 0.42
   phone_confidence: 0.45
   phone_use_frames: 2
+  phone_hold_frames: 12
   missing_face_frames: 8
   eye_closed_frames: 8
   drowsy_frames: 36
