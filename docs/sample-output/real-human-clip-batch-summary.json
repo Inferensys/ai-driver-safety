@@ -39,9 +39,9 @@
       "longest_unsafe_interval_seconds": 3.417,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 7.936,
-        "p95_latency_ms": 9.304,
-        "estimated_runtime_fps": 126.0,
+        "avg_latency_ms": 7.813,
+        "p95_latency_ms": 8.737,
+        "estimated_runtime_fps": 127.99,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -80,16 +80,17 @@
       "event_counts": {
         "distracted": 79,
         "drowsy": 38,
-        "eyes_closed": 66
+        "eyes_closed": 66,
+        "phone_use": 8
       },
       "longest_unsafe_interval_seconds": 2.542,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 6.222,
-        "p95_latency_ms": 9.05,
-        "estimated_runtime_fps": 160.71,
+        "avg_latency_ms": 66.961,
+        "p95_latency_ms": 78.84,
+        "estimated_runtime_fps": 14.93,
         "face_provider": "mediapipe",
-        "object_provider": "none",
+        "object_provider": "onnx",
         "fusion_model": "driver-risk-fusion-v1"
       }
     }

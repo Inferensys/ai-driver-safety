@@ -1,43 +1,45 @@
+# Deep Learning based Driver Monitoring System for Activity and Object Recognition.
+
+inferensys.com
+
+----
+
 ![Inferensys Driver Monitoring](docs/cover.svg)
 
-AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use.
+We present a **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use.
 
 The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path with real human cabin recordings and keeps the sensor/vehicle inputs as algorithm extension points.
 
 > Research and demo software only. This is not certified automotive safety software.
 
-## Real Demo
-
-The README demo uses approved human cabin clips only.
-
 ![AI Driver Safety real human demo](docs/demo/real-human-demo.gif)
-
-**Main demo result**
 
 | Source | Duration | Frames | Detector | Result |
 | --- | ---: | ---: | --- | --- |
-| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `126 FPS` |
+| Driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `128 FPS` |
 
-**Artifacts**
+## Phone-use Detection
 
-- [Annotated MP4](docs/demo/real-human-demo.mp4)
-- [Session summary JSON](docs/sample-output/real-human-summary.json)
-- [Event timeline JSON](docs/sample-output/real-human-events.json)
-- [HTML report source run metadata](docs/sample-output/real-human-demo-source.json)
-- [Batch summary for all four clips](docs/sample-output/real-human-clip-batch-summary.json)
+Clip 4 uses the optional ONNX object detector on the same cabin video pipeline. The model flags the visible phone as `cell phone`, converts it into `phone_use`, and feeds it into the same risk timeline.
 
-## Demo Gallery
+![AI Driver Safety phone-use detection](docs/demo/real-human-phone-use.gif)
+
+| Source | Detector | Result |
+| --- | --- | --- |
+| Driver cabin clip 4 | MediaPipe Face Landmarker + ONNX YOLO11s COCO detector | `phone_use: 8`, `eyes_closed: 66`, `drowsy: 38`, `distracted: 79`; object provider `onnx`; estimated runtime `15 FPS` |
+
+## Demo
 
 | Clip | Output | What the system flags |
 | --- | --- | --- |
 | 1 | ![Clip 1: eye closure and yawn events](docs/demo/real-human-clip-1.gif) | `eyes_closed: 57`, `drowsy: 20`, `yawning: 12` |
 | 2 | ![Clip 2: strongest drowsiness and yawn timeline](docs/demo/real-human-clip-2.gif) | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29` |
 | 3 | ![Clip 3: head drop and distracted intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `distracted: 65` |
-| 4 | ![Clip 4: drowsy posture and distracted window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `distracted: 79` |
+| 4 | ![Clip 4: phone use, drowsy posture, and distracted window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `distracted: 79`, `phone_use: 8` |
 
 ![AI Driver Safety real clip batch](docs/screenshots/real-human-clip-batch.png)
 
-## What A Car/OEM Reader Sees In 60 Seconds
+## What A Car/OEM Reader Sees
 
 - A real driver video goes in.
 - The system writes an annotated MP4, event JSON, CSV, summary JSON, and HTML report.
@@ -58,20 +60,6 @@ The scorer is `driver-risk-fusion-v1`.
 
 This keeps the original fuzzy-logic concept practical. The system can show why risk rose.
 
-## Original Product Thesis
-
-**Deep learning based driver monitoring system for activity and object recognition.**
-
-Passenger cars need cabin intelligence, not only road perception. A driver monitoring system can read observable cabin cues and vehicle signals to help decide whether the driver is ready to take control, distracted, or fatigued.
-
-The original idea had three parts:
-
-- **Computer vision**: drowsiness, distraction, yawn, eye closure, activity recognition, object recognition, driver ID hooks, hand-gesture hooks, and real-time alerts.
-- **Physiological sensing**: heart-rate or wearable-style signals for fatigue and medical-risk cues.
-- **Driving style AI**: accelerations, braking, turns, speed, lane drift, time-to-collision, tailgating, and road-context thresholds scored with fuzzy logic.
-
-This repo now implements the first production-shaped path: video analysis, event extraction, fusion scoring, report generation, and demo artifacts from real human recordings.
-
 ## Run It
 
 ```bash
@@ -83,6 +71,14 @@ python -m pip install -e ".[dev,vision]"
 python scripts/download_models.py --mediapipe-face
 ```
 
+Enable the phone-use detector locally:
+
+```bash
+python -m pip install -e ".[onnx]"
+python -m pip install ultralytics onnx onnxslim onnxruntime
+python scripts/download_models.py --phone-detector --phone-model yolo11s.pt
+```
+
 Analyze a real driver clip:
 
 ```bash
@@ -90,6 +86,15 @@ ai-driver-safety analyze \
   --video data/approved-demo/driver-yawning.mp4 \
   --config configs/default.yaml \
   --out runs/real-human-demo
+```
+
+Analyze with phone-use detection:
+
+```bash
+ai-driver-safety analyze \
+  --video data/approved-demo/driver-phone-use.mp4 \
+  --config configs/phone-demo.yaml \
+  --out runs/phone-use-demo
 ```
 
 Open the generated report:
@@ -120,6 +125,7 @@ ai-driver-safety run --source webcam --config configs/default.yaml
 
 ```bash
 ai-driver-safety analyze --video data/approved-demo/driver-yawning.mp4 --out runs/real-human-demo
+ai-driver-safety analyze --video data/approved-demo/driver-phone-use.mp4 --config configs/phone-demo.yaml --out runs/phone-use-demo
 ai-driver-safety run --source webcam --config configs/default.yaml
 ai-driver-safety report --run runs/real-human-demo --format html,json,csv
 ```
@@ -144,7 +150,7 @@ driver_safety/
   io/          video/webcam sources and annotated video writer
   runtime/     analyze/run loops and latency metrics
   reporting/   JSON, CSV, HTML report exports
-configs/       default, night-driving, and edge CPU profiles
+configs/       default, phone-demo, night-driving, and edge CPU profiles
 docs/          architecture, edge notes, demo assets
 legacy/        original webcam scripts, Haar assets, heartbeat sketch
 ```
@@ -161,6 +167,8 @@ Committed evidence:
 - `docs/sample-output/real-human-events.json`
 - `docs/sample-output/real-human-summary.json`
 - `docs/sample-output/real-human-clip-batch-summary.json`
+- `docs/sample-output/phone-use-events.json`
+- `docs/sample-output/phone-use-summary.json`
 
 ## Models
 
@@ -171,6 +179,11 @@ python scripts/download_models.py --mediapipe-face
 ```
 
 Optional ONNX phone/object detector:
+
+```bash
+python -m pip install ultralytics onnx onnxslim onnxruntime
+python scripts/download_models.py --phone-detector --phone-model yolo11s.pt
+```
 
 ```yaml
 object_detector:

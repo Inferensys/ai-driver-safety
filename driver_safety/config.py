@@ -13,6 +13,7 @@ class ThresholdConfig:
     mouth_aspect_ratio: float = 0.5
     head_offset: float = 0.42
     phone_confidence: float = 0.45
+    phone_use_frames: int = 2
     missing_face_frames: int = 8
     eye_closed_frames: int = 8
     drowsy_frames: int = 36
@@ -35,6 +36,8 @@ class ObjectDetectorConfig:
     provider: str = "none"
     model_path: str = "models/driver-objects.onnx"
     labels_path: str = "models/driver-objects.labels"
+    confidence_threshold: float = 0.25
+    iou_threshold: float = 0.45
     phone_labels: list[str] = field(default_factory=lambda: ["cell phone", "phone", "mobile"])
 
 
@@ -113,3 +116,7 @@ def _validate_config(config: DriverSafetyConfig) -> None:
             raise ValueError(f"thresholds.{field_name} must be within a sensible range")
     if config.runtime.max_frames is not None and config.runtime.max_frames < 1:
         raise ValueError("runtime.max_frames must be >= 1 when set")
+    if not 0 < config.object_detector.confidence_threshold < 1:
+        raise ValueError("object_detector.confidence_threshold must be between 0 and 1")
+    if not 0 < config.object_detector.iou_threshold < 1:
+        raise ValueError("object_detector.iou_threshold must be between 0 and 1")

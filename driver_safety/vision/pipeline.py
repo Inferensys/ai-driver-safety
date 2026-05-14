@@ -40,6 +40,7 @@ class DriverSafetyPipeline:
         self._yawn_counter = 0
         self._distracted_counter = 0
         self._missing_face_counter = 0
+        self._phone_counter = 0
 
     def process_frame(self, packet: FramePacket) -> ProcessedFrame:
         started = perf_counter()
@@ -66,7 +67,7 @@ class DriverSafetyPipeline:
                         DriverState.DISTRACTED,
                         1.0,
                         Severity.WARNING,
-                        "Distracted: driver not visible in cabin feed",
+                        "Distracted: driver attention not trackable",
                     )
                 )
         else:
@@ -79,22 +80,34 @@ class DriverSafetyPipeline:
 
         object_observations = self.object_detector.detect(packet)
         phone_labels = {label.lower() for label in self.config.object_detector.phone_labels}
+        best_phone = None
         for obj in object_observations:
             if (
                 obj.label.lower() in phone_labels
                 and obj.confidence >= self.config.thresholds.phone_confidence
+                and (best_phone is None or obj.confidence > best_phone.confidence)
             ):
-                raw_signals["phone_use"] = max(raw_signals["phone_use"], obj.confidence)
+                best_phone = obj
+
+        if best_phone is None:
+            self._phone_counter = 0
+        else:
+            self._phone_counter += 1
+            phone_gate = min(
+                1.0, self._phone_counter / max(1, self.config.thresholds.phone_use_frames)
+            )
+            raw_signals["phone_use"] = best_phone.confidence * phone_gate
+            if self._phone_counter >= self.config.thresholds.phone_use_frames:
                 events.append(
                     self._event(
                         packet,
                         "phone_use",
                         DriverState.PHONE_USE,
-                        obj.confidence,
+                        raw_signals["phone_use"],
                         Severity.CRITICAL,
                         "Phone use detected while driving",
-                        bbox=obj.bbox,
-                        metadata={"label": obj.label, "provider": obj.provider},
+                        bbox=best_phone.bbox,
+                        metadata={"label": best_phone.label, "provider": best_phone.provider},
                     )
                 )
 

@@ -20,12 +20,17 @@ python scripts/download_models.py --mediapipe-face
 
 ## ONNX Object Detector
 
-Place exported detector assets under `models/`:
+Export detector assets under `models/`:
 
 ```text
 models/
   driver-objects.onnx
   driver-objects.labels
+```
+
+```bash
+python -m pip install ultralytics onnx onnxslim onnxruntime
+python scripts/download_models.py --phone-detector --phone-model yolo11s.pt
 ```
 
 Then enable:
@@ -35,6 +40,8 @@ object_detector:
   enabled: true
   provider: onnx
 ```
+
+For the phone-use demo, use `configs/phone-demo.yaml`. The config keeps the core runtime ONNX-based and maps COCO `cell phone` detections into the `phone_use` signal.
 
 ## YOLO11 Export Direction
 

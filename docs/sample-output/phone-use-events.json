@@ -1,0 +1,170 @@
+[
+  {
+    "timestamp": 2.625,
+    "frame_index": 63,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.3679,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      474,
+      556,
+      101,
+      41
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "7523a1ff34c54549b9eba7cd5e36d34c"
+  },
+  {
+    "timestamp": 2.6666666666666665,
+    "frame_index": 64,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.7847,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      480,
+      545,
+      111,
+      27
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "44f06333bf24441c9fd752133f3ee692"
+  },
+  {
+    "timestamp": 2.7083333333333335,
+    "frame_index": 65,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.6348,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      510,
+      532,
+      105,
+      26
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "8562a09bbf28431aa60b77b86999af2f"
+  },
+  {
+    "timestamp": 5.5,
+    "frame_index": 132,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.6816,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      568,
+      508,
+      75,
+      42
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "e73d2d149eb84adc8fb00bf092ae38f0"
+  },
+  {
+    "timestamp": 5.541666666666667,
+    "frame_index": 133,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.6992,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      534,
+      511,
+      105,
+      27
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "1a111e3f9f4a4cbba56a9477555d210b"
+  },
+  {
+    "timestamp": 5.583333333333333,
+    "frame_index": 134,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.4729,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      494,
+      515,
+      109,
+      39
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "dc680d50913e4141a89f9746ddea53f2"
+  },
+  {
+    "timestamp": 5.625,
+    "frame_index": 135,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.3369,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      459,
+      536,
+      104,
+      40
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "56c66a06fe5e478ba8090e51f6a14689"
+  },
+  {
+    "timestamp": 5.666666666666667,
+    "frame_index": 136,
+    "signal": "phone_use",
+    "state": "phone_use",
+    "score": 0.5322,
+    "severity": "critical",
+    "message": "Phone use detected while driving",
+    "bbox": [
+      415,
+      548,
+      120,
+      51
+    ],
+    "landmarks": [],
+    "metadata": {
+      "label": "cell phone",
+      "provider": "onnx"
+    },
+    "event_id": "abb048f150894d498493ad943b65db57"
+  }
+]
