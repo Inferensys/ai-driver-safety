@@ -7,6 +7,7 @@ from driver_safety.datasets.intelligence import (
     build_dataset_intelligence_report,
     write_dataset_intelligence_artifacts,
 )
+from driver_safety.datasets.nitymed import build_nitymed_manifest
 from driver_safety.datasets.registry import DatasetSpec, all_dataset_specs, get_dataset_spec
 from driver_safety.datasets.uah_driveset import (
     build_uah_manifest,
@@ -19,6 +20,7 @@ __all__ = [
     "all_dataset_specs",
     "build_dataset_intelligence_report",
     "build_dd_manifest",
+    "build_nitymed_manifest",
     "build_uah_manifest",
     "build_yawdd_manifest",
     "fetch_dd_dryad_file_index",

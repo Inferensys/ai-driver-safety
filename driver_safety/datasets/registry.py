@@ -23,6 +23,29 @@ class DatasetSpec:
 
 DATASETS: tuple[DatasetSpec, ...] = (
     DatasetSpec(
+        key="nitymed",
+        name="NITYMED: Night-Time Yawning-Microsleep-Eyeblink-driver Distraction",
+        use_case="Real in-car night driving video with yawning and microsleep clips.",
+        access_url="https://datasets.esdalab.ece.uop.gr/",
+        license_summary=(
+            "Creative Commons Attribution. Access requires submitting name, affiliation, and "
+            "business or academic email through the dataset page."
+        ),
+        local_layout="data/nitymed/{Yawning,Microsleep}/{Male,Female}/{HDTV720,FULL}/",
+        prepare_command=(
+            "ai-driver-safety datasets prepare-nitymed --input data/nitymed "
+            "--out data/manifests/nitymed.json"
+        ),
+        media_policy=(
+            "Use as the preferred README demo source after access approval. Commit only short "
+            "derived assets with attribution, not the full raw dataset."
+        ),
+        notes=(
+            "Best immediate fit for a real human driving/yawning demo.",
+            "Includes 107 yawning videos and 21 microsleep videos according to the dataset page.",
+        ),
+    ),
+    DatasetSpec(
         key="yawdd",
         name="YawDD: Yawning Detection Dataset",
         use_case="Real in-car human yawning, talking, singing, and silent-driving video.",

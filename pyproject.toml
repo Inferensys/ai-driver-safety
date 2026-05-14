@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "ai-driver-safety"
 version = "0.2.0"
-description = "Intelligent driver monitoring system for drowsiness, distraction, yawning, eye closure, and event review."
+description = "Driver monitoring algorithm and demo pipeline for eye closure, yawning, drowsiness, distraction, sensor fusion, and vehicle-risk scoring."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "Apache-2.0" }
@@ -29,15 +29,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-api = ["fastapi>=0.111", "python-multipart>=0.0.9", "uvicorn[standard]>=0.30"]
 vision = ["mediapipe>=0.10.30"]
 onnx = ["onnxruntime>=1.18"]
 datasets = ["pyedflib>=0.1.39"]
 dev = ["mypy>=1.10", "pytest>=8.2", "pytest-cov>=5.0", "ruff>=0.5"]
 all = [
-  "fastapi>=0.111",
-  "python-multipart>=0.0.9",
-  "uvicorn[standard]>=0.30",
   "mediapipe>=0.10.30",
   "onnxruntime>=1.18",
   "pyedflib>=0.1.39",

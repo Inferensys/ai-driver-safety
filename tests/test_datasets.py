@@ -9,8 +9,25 @@ from driver_safety.datasets.dd_database import (
     write_dd_sensor_events,
 )
 from driver_safety.datasets.intelligence import write_dataset_intelligence_artifacts
+from driver_safety.datasets.nitymed import build_nitymed_manifest
 from driver_safety.datasets.uah_driveset import build_uah_manifest, write_uah_vehicle_events
 from driver_safety.datasets.yawdd import build_yawdd_manifest
+
+
+def test_nitymed_manifest_tracks_real_yawning_and_microsleep_clips(tmp_path: Path) -> None:
+    root = tmp_path / "nitymed"
+    yawning = root / "Yawning" / "Male" / "HDTV720" / "driver-yawn-01.mp4"
+    microsleep = root / "Microsleep" / "Female" / "FULL" / "driver-microsleep-01.mp4"
+    yawning.parent.mkdir(parents=True)
+    microsleep.parent.mkdir(parents=True)
+    yawning.touch()
+    microsleep.touch()
+
+    manifest = build_nitymed_manifest(root)
+
+    assert manifest["clip_count"] == 2
+    assert manifest["scenario_counts"] == {"microsleep": 1, "yawning": 1}
+    assert manifest["resolution_counts"] == {"full_hd": 1, "hdtv720": 1}
 
 
 def test_yawdd_manifest_tracks_yawning_clips_and_media_permissions(tmp_path: Path) -> None:
@@ -107,5 +124,6 @@ def test_dataset_intelligence_artifacts_include_project_signals(tmp_path: Path) 
 
     assert artifacts["markdown"].exists()
     assert artifacts["chart"].exists()
-    assert payload["datasets"][0]["key"] == "yawdd"
-    assert "sensor_drowsiness" in payload["datasets"][1]["project_signals"]
+    assert payload["datasets"][0]["key"] == "nitymed"
+    assert payload["datasets"][1]["key"] == "yawdd"
+    assert "sensor_drowsiness" in payload["datasets"][2]["project_signals"]

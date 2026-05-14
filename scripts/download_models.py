@@ -13,7 +13,9 @@ FACE_LANDMARKER_URL = (
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Download optional AI Driver Safety model assets.")
-    parser.add_argument("--mediapipe-face", action="store_true", help="Download Face Landmarker task.")
+    parser.add_argument(
+        "--mediapipe-face", action="store_true", help="Download Face Landmarker task."
+    )
     parser.add_argument("--out", default="models", help="Model output directory.")
     args = parser.parse_args()
     output_dir = Path(args.out)
@@ -28,4 +30,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

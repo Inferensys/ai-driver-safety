@@ -1,0 +1,97 @@
+{
+  "clips": [
+    {
+      "clip": "clip_1_202605141455",
+      "run_dir": "runs/user-real-demo-clips/clip_1_202605141455",
+      "annotated_video": "runs/user-real-demo-clips/clip_1_202605141455/annotated.mp4",
+      "report": "runs/user-real-demo-clips/clip_1_202605141455/report.html",
+      "duration_seconds": 7.958,
+      "processed_frames": 192,
+      "event_counts": {
+        "drowsy": 20,
+        "eyes_closed": 57,
+        "yawning": 12
+      },
+      "longest_unsafe_interval_seconds": 1.833,
+      "metrics": {
+        "source_fps": 24.0,
+        "avg_latency_ms": 9.018,
+        "p95_latency_ms": 10.568,
+        "estimated_runtime_fps": 110.89,
+        "face_provider": "mediapipe",
+        "object_provider": "none",
+        "fusion_model": "driver-risk-fusion-v1"
+      }
+    },
+    {
+      "clip": "clip_2_202605141455",
+      "run_dir": "runs/user-real-demo-clips/clip_2_202605141455",
+      "annotated_video": "runs/user-real-demo-clips/clip_2_202605141455/annotated.mp4",
+      "report": "runs/user-real-demo-clips/clip_2_202605141455/report.html",
+      "duration_seconds": 7.958,
+      "processed_frames": 192,
+      "event_counts": {
+        "drowsy": 45,
+        "eyes_closed": 111,
+        "face_missing": 29,
+        "yawning": 23
+      },
+      "longest_unsafe_interval_seconds": 3.417,
+      "metrics": {
+        "source_fps": 24.0,
+        "avg_latency_ms": 7.926,
+        "p95_latency_ms": 9.061,
+        "estimated_runtime_fps": 126.16,
+        "face_provider": "mediapipe",
+        "object_provider": "none",
+        "fusion_model": "driver-risk-fusion-v1"
+      }
+    },
+    {
+      "clip": "clip_3_202605141455",
+      "run_dir": "runs/user-real-demo-clips/clip_3_202605141455",
+      "annotated_video": "runs/user-real-demo-clips/clip_3_202605141455/annotated.mp4",
+      "report": "runs/user-real-demo-clips/clip_3_202605141455/report.html",
+      "duration_seconds": 7.958,
+      "processed_frames": 192,
+      "event_counts": {
+        "drowsy": 9,
+        "eyes_closed": 59,
+        "face_missing": 65
+      },
+      "longest_unsafe_interval_seconds": 1.333,
+      "metrics": {
+        "source_fps": 24.0,
+        "avg_latency_ms": 6.822,
+        "p95_latency_ms": 10.806,
+        "estimated_runtime_fps": 146.59,
+        "face_provider": "mediapipe",
+        "object_provider": "none",
+        "fusion_model": "driver-risk-fusion-v1"
+      }
+    },
+    {
+      "clip": "clip_4_202605141455",
+      "run_dir": "runs/user-real-demo-clips/clip_4_202605141455",
+      "annotated_video": "runs/user-real-demo-clips/clip_4_202605141455/annotated.mp4",
+      "report": "runs/user-real-demo-clips/clip_4_202605141455/report.html",
+      "duration_seconds": 7.958,
+      "processed_frames": 192,
+      "event_counts": {
+        "drowsy": 38,
+        "eyes_closed": 66,
+        "face_missing": 79
+      },
+      "longest_unsafe_interval_seconds": 2.542,
+      "metrics": {
+        "source_fps": 24.0,
+        "avg_latency_ms": 6.529,
+        "p95_latency_ms": 9.419,
+        "estimated_runtime_fps": 153.17,
+        "face_provider": "mediapipe",
+        "object_provider": "none",
+        "fusion_model": "driver-risk-fusion-v1"
+      }
+    }
+  ]
+}

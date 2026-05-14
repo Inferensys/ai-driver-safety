@@ -19,4 +19,3 @@ class SessionRecorder:
     def write_frame_score(self, timestamp: float, score: float, latency_ms: float) -> None:
         self.frame_scores.append((timestamp, score))
         self.latencies_ms.append(latency_ms)
-

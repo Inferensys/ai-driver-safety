@@ -32,16 +32,15 @@ class FaceObservation:
 class FaceLandmarkDetector(Protocol):
     provider: str
 
-    def detect(self, packet: FramePacket) -> list[FaceObservation]:
-        ...
+    def detect(self, packet: FramePacket) -> list[FaceObservation]: ...
 
 
 class ModelNotAvailableError(RuntimeError):
     pass
 
 
-class SyntheticFaceLandmarkDetector:
-    provider = "synthetic"
+class FixtureFaceLandmarkDetector:
+    provider = "fixture"
 
     def detect(self, packet: FramePacket) -> list[FaceObservation]:
         frame = packet.frame
@@ -57,7 +56,7 @@ class SyntheticFaceLandmarkDetector:
         bbox = (cx - face_w // 2, cy - face_h // 2, face_w, face_h)
         eye_open = scenario != "eyes_closed"
         mouth_open = scenario == "yawning"
-        landmarks = _synthetic_landmarks(cx, cy, eye_open=eye_open, mouth_open=mouth_open)
+        landmarks = _fixture_landmarks(cx, cy, eye_open=eye_open, mouth_open=mouth_open)
         return [FaceObservation(bbox=bbox, landmarks=landmarks, provider=self.provider)]
 
 
@@ -83,7 +82,9 @@ class HaarFaceDetector:
             observations.append(
                 FaceObservation(
                     bbox=(int(x), int(y), int(w), int(h)),
-                    landmarks=_synthetic_landmarks(cx, cy, eye_open=True, mouth_open=False, scale=w / 150),
+                    landmarks=_fixture_landmarks(
+                        cx, cy, eye_open=True, mouth_open=False, scale=w / 150
+                    ),
                     provider=self.provider,
                     confidence=0.65,
                 )
@@ -146,8 +147,8 @@ class MediaPipeFaceLandmarker:
 
 def create_face_detector(config: DriverSafetyConfig) -> FaceLandmarkDetector:
     provider = config.vision.provider.lower()
-    if provider == "synthetic":
-        return SyntheticFaceLandmarkDetector()
+    if provider == "fixture":
+        return FixtureFaceLandmarkDetector()
     if provider in {"mediapipe", "auto"}:
         try:
             return MediaPipeFaceLandmarker(Path(config.vision.face_landmarker_model))
@@ -163,7 +164,7 @@ def _pick(points: list[Point], indexes: list[int]) -> list[Point]:
     return [points[index] for index in indexes if index < len(points)]
 
 
-def _synthetic_landmarks(
+def _fixture_landmarks(
     cx: int,
     cy: int,
     *,
@@ -218,17 +219,35 @@ def _scenario_for_timestamp(timestamp: float) -> str:
     return "attentive"
 
 
-def draw_synthetic_driver_frame(width: int, height: int, timestamp: float) -> np.ndarray:
+def draw_fixture_driver_frame(width: int, height: int, timestamp: float) -> np.ndarray:
     frame = np.zeros((height, width, 3), dtype=np.uint8)
     frame[:] = (28, 31, 32)
     cv2.rectangle(frame, (0, int(height * 0.58)), (width, height), (22, 24, 25), -1)
-    cv2.rectangle(frame, (int(width * 0.08), int(height * 0.05)), (int(width * 0.92), int(height * 0.52)), (62, 68, 72), -1)
-    cv2.line(frame, (int(width * 0.5), int(height * 0.08)), (int(width * 0.48), int(height * 0.52)), (235, 190, 82), 3)
-    cv2.line(frame, (int(width * 0.5), int(height * 0.08)), (int(width * 0.54), int(height * 0.52)), (235, 190, 82), 3)
+    cv2.rectangle(
+        frame,
+        (int(width * 0.08), int(height * 0.05)),
+        (int(width * 0.92), int(height * 0.52)),
+        (62, 68, 72),
+        -1,
+    )
+    cv2.line(
+        frame,
+        (int(width * 0.5), int(height * 0.08)),
+        (int(width * 0.48), int(height * 0.52)),
+        (235, 190, 82),
+        3,
+    )
+    cv2.line(
+        frame,
+        (int(width * 0.5), int(height * 0.08)),
+        (int(width * 0.54), int(height * 0.52)),
+        (235, 190, 82),
+        3,
+    )
     cv2.circle(frame, (int(width * 0.5), int(height * 0.73)), int(width * 0.12), (12, 12, 13), 16)
     cv2.putText(
         frame,
-        "AI Driver Safety demo cabin",
+        "AI Driver Safety test fixture",
         (24, height - 24),
         cv2.FONT_HERSHEY_SIMPLEX,
         0.7,
@@ -237,7 +256,7 @@ def draw_synthetic_driver_frame(width: int, height: int, timestamp: float) -> np
         cv2.LINE_AA,
     )
     packet = FramePacket(frame=frame, timestamp=timestamp, frame_index=int(timestamp * 24))
-    detector = SyntheticFaceLandmarkDetector()
+    detector = FixtureFaceLandmarkDetector()
     observations = detector.detect(packet)
     if not observations:
         return frame
@@ -250,4 +269,3 @@ def draw_synthetic_driver_frame(width: int, height: int, timestamp: float) -> np
     mouth = np.array(obs.landmarks["mouth"], dtype=np.int32)
     cv2.polylines(frame, [mouth], True, (80, 90, 210), 2)
     return frame
-

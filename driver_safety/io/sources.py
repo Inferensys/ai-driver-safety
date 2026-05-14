@@ -72,4 +72,3 @@ class WebcamFrameSource:
 
     def close(self) -> None:
         self.capture.release()
-

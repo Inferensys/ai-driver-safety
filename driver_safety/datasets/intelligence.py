@@ -49,12 +49,51 @@ def build_dataset_intelligence_report(
     *,
     dd_file_index: str | Path | None = None,
     yawdd_manifest: str | Path | None = None,
+    nitymed_manifest: str | Path | None = None,
     uah_manifest: str | Path | None = None,
 ) -> DatasetIntelligenceReport:
     dd_stats = _dd_stats(dd_file_index)
     yawdd_stats = _yawdd_stats(yawdd_manifest)
+    nitymed_stats = _nitymed_stats(nitymed_manifest)
     uah_stats = _uah_stats(uah_manifest)
     datasets = [
+        DatasetIntelligence(
+            key="nitymed",
+            name="NITYMED: Night-Time Yawning-Microsleep-Eyeblink-driver Distraction",
+            role="Primary README demo source for real in-car yawning and microsleep video.",
+            real_world_value=(
+                "Exercises the visible cabin-video path on real drivers in real cars at night, "
+                "including short yawning clips and longer microsleep clips."
+            ),
+            public_data_shape=nitymed_stats,
+            project_signals=[
+                "face_present",
+                "mouth_aspect_ratio",
+                "yawning",
+                "eyes_closed",
+                "microsleep_review_window",
+            ],
+            analysis=[
+                "Use NITYMED as the public-facing real human demo source once dataset access is approved.",
+                "The yawning subset is short enough for README clips and should replace generated cabin visuals.",
+                "The microsleep subset is better for event-review timelines because clips are longer and include talking, looking around, and microsleep windows.",
+                "Because the dataset page allows distinct frames in research publications, README images should cite the dataset and avoid committing the raw full dataset.",
+            ],
+            gaps=[
+                "Access requires submitting name, affiliation, and business or academic email.",
+                "Nighttime only, so it does not replace day/night benchmark coverage from NTHU.",
+                "Frame-level event labels still need local review windows for polished demos.",
+            ],
+            demo_policy=(
+                "Preferred source for `docs/demo/real-human-demo.*` after access approval; "
+                "commit only short derived assets with attribution."
+            ),
+            next_benchmark=(
+                "Analyze one 15-25 second yawning clip and one microsleep clip, then publish "
+                "annotated GIF, MP4, timeline PNG, and summary JSON."
+            ),
+            source="https://datasets.esdalab.ece.uop.gr/",
+        ),
         DatasetIntelligence(
             key="yawdd",
             name="YawDD: Yawning Detection Dataset",
@@ -163,10 +202,11 @@ def build_dataset_intelligence_report(
         ),
         datasets=datasets,
         fused_solution=[
-            "Vision path: YawDD validates real human yawn/mouth signals and the annotated-video/report workflow.",
+            "README proof path: NITYMED replaces generated visuals with real in-car yawning and microsleep footage.",
+            "Vision benchmark path: YawDD validates real human yawn/mouth signals and the annotated-video/report workflow.",
             "Sensor path: DD-Database validates physiological drowsiness events for the heartbeat/sensor extension.",
             "Vehicle path: UAH-DriveSet validates fuzzy driving-style scoring from real car telemetry.",
-            "Fusion path: SessionSummary combines camera, physiological, and vehicle-risk events into one timeline.",
+            "Fusion path: driver-risk-fusion-v1 combines camera, physiological, and vehicle-risk events into one timeline.",
         ],
         readme_results=[
             {
@@ -192,11 +232,13 @@ def write_dataset_intelligence_artifacts(
     output_chart: str | Path | None = None,
     dd_file_index: str | Path | None = None,
     yawdd_manifest: str | Path | None = None,
+    nitymed_manifest: str | Path | None = None,
     uah_manifest: str | Path | None = None,
 ) -> dict[str, Path]:
     report = build_dataset_intelligence_report(
         dd_file_index=dd_file_index,
         yawdd_manifest=yawdd_manifest,
+        nitymed_manifest=nitymed_manifest,
         uah_manifest=uah_manifest,
     )
     artifacts: dict[str, Path] = {}
@@ -252,7 +294,9 @@ def render_dataset_intelligence_chart(
 ) -> None:
     width, height = 1280, 720
     image = np.full((height, width, 3), (246, 248, 247), dtype=np.uint8)
-    _put_text(image, "Real Dataset Intelligence", (48, 70), scale=1.25, color=(22, 32, 29), thickness=2)
+    _put_text(
+        image, "Real Dataset Intelligence", (48, 70), scale=1.25, color=(22, 32, 29), thickness=2
+    )
     _put_text(
         image,
         "Camera + physiological sensors + vehicle telemetry for one fused driver-risk timeline",
@@ -261,15 +305,16 @@ def render_dataset_intelligence_chart(
         color=(72, 84, 79),
     )
     columns = [
-        ("YawDD", "Human yawning video", (58, 136, 211)),
-        ("DD-Database", "Physiology drowsiness", (224, 132, 47)),
-        ("UAH-DriveSet", "Car sensor telemetry", (49, 150, 102)),
+        ("NITYMED", "Real demo video", (185, 72, 72)),
+        ("YawDD", "Yawn benchmark", (58, 136, 211)),
+        ("DD-Database", "Physiology sensors", (224, 132, 47)),
+        ("UAH-DriveSet", "Car telemetry", (49, 150, 102)),
     ]
-    card_w = 370
+    card_w = 284
     card_h = 410
     y = 168
     for idx, (title, subtitle, color) in enumerate(columns):
-        x = 48 + idx * 410
+        x = 36 + idx * 306
         cv2.rectangle(image, (x, y), (x + card_w, y + card_h), (255, 255, 255), -1)
         cv2.rectangle(image, (x, y), (x + card_w, y + card_h), (218, 225, 222), 2)
         cv2.rectangle(image, (x, y), (x + card_w, y + 12), color, -1)
@@ -280,16 +325,16 @@ def render_dataset_intelligence_chart(
         yy = y + 135
         for key, value in stats:
             label = f"{key.replace('_', ' ')}: {value}"
-            _wrap_text(image, label, (x + 24, yy), max_width=320, scale=0.46, color=color)
+            _wrap_text(image, label, (x + 24, yy), max_width=235, scale=0.4, color=color)
             yy += 52
         _put_text(image, "Signals", (x + 24, y + 315), scale=0.5, color=(20, 29, 27), thickness=2)
         signal_text = ", ".join(dataset.project_signals[:3])
-        _wrap_text(image, signal_text, (x + 24, y + 348), max_width=325, scale=0.44)
+        _wrap_text(image, signal_text, (x + 24, y + 348), max_width=235, scale=0.4)
     footer_y = 640
     cv2.rectangle(image, (48, footer_y - 28), (1232, footer_y + 38), (232, 238, 235), -1)
     _put_text(
         image,
-        "Fusion output: visual yawning + sensor drowsiness + vehicle-risk events -> SessionSummary risk timeline",
+        "Fusion output: real cabin cues + sensor drowsiness + vehicle-risk events -> SessionSummary risk timeline",
         (72, footer_y + 12),
         scale=0.56,
         color=(28, 40, 36),
@@ -309,7 +354,9 @@ def _dd_stats(path: str | Path | None) -> dict[str, str | int | float]:
         return defaults
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     files = data.get("files", [])
-    annotation_files = [item for item in files if str(item.get("filename", "")).endswith("_annotations.edf")]
+    annotation_files = [
+        item for item in files if str(item.get("filename", "")).endswith("_annotations.edf")
+    ]
     signal_files = [
         item
         for item in files
@@ -348,6 +395,29 @@ def _yawdd_stats(path: str | Path | None) -> dict[str, str | int | float]:
     return defaults
 
 
+def _nitymed_stats(path: str | Path | None) -> dict[str, str | int | float]:
+    defaults: dict[str, str | int | float] = {
+        "videos": 130,
+        "yawning_videos": 107,
+        "microsleep_videos": 21,
+        "format": "MP4, 25 fps, 720p/1080p",
+    }
+    if not path or not Path(path).exists():
+        return defaults
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    counts = data.get("scenario_counts", {})
+    defaults.update(
+        {
+            "local_clips": int(data.get("clip_count", 0)),
+            "local_yawning_clips": int(counts.get("yawning", 0)) if isinstance(counts, dict) else 0,
+            "local_microsleep_clips": int(counts.get("microsleep", 0))
+            if isinstance(counts, dict)
+            else 0,
+        }
+    )
+    return defaults
+
+
 def _uah_stats(path: str | Path | None) -> dict[str, str | int | float]:
     defaults: dict[str, str | int | float] = {
         "duration_minutes": 500,
@@ -369,15 +439,14 @@ def _uah_stats(path: str | Path | None) -> dict[str, str | int | float]:
 
 def _chart_stats(dataset: DatasetIntelligence) -> list[tuple[str, str | int | float]]:
     preferred_keys = {
+        "nitymed": ["videos", "yawning_videos", "microsleep_videos", "format"],
         "yawdd": ["videos", "mirror_camera_videos", "dash_camera_videos"],
         "dd-database": ["subjects", "trials", "duration_hours", "channels"],
         "uah-driveset": ["duration_minutes", "driver_vehicle_pairs", "behaviors", "road_types"],
     }
     keys = preferred_keys.get(dataset.key, list(dataset.public_data_shape.keys())[:4])
     return [
-        (key, dataset.public_data_shape[key])
-        for key in keys
-        if key in dataset.public_data_shape
+        (key, dataset.public_data_shape[key]) for key in keys if key in dataset.public_data_shape
     ]
 
 

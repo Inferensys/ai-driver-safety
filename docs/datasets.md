@@ -8,7 +8,8 @@ The revamp uses three real dataset tracks:
 
 | Track | Dataset | What It Proves | Local Command |
 | --- | --- | --- | --- |
-| Human yawning video | YawDD | Mouth/yawn scoring on real in-car human video | `ai-driver-safety datasets prepare-yawdd` |
+| Real README demo video | NITYMED | In-car yawning and microsleep video on real drivers | `ai-driver-safety datasets prepare-nitymed` |
+| Human yawning benchmark | YawDD | Mouth/yawn scoring on real in-car human video | `ai-driver-safety datasets prepare-yawdd` |
 | Physiological drowsiness sensors | DD-Database | Drowsiness events from EEG, EOG, ECG, and annotations | `ai-driver-safety datasets prepare-dd` and `ai-driver-safety datasets dd-events` |
 | Car sensor telemetry | UAH-DriveSet | Vehicle-risk events from accelerometer, GPS, lane, and vehicle telemetry | `ai-driver-safety datasets prepare-uah` and `ai-driver-safety datasets uah-events` |
 
@@ -23,12 +24,65 @@ ai-driver-safety datasets intelligence \
 
 The generated report is not just a dataset list. It maps each dataset to the project aims:
 
-- YawDD validates the cabin-camera yawn/mouth path.
+- NITYMED replaces generated cabin visuals with real in-car yawning and microsleep footage.
+- YawDD validates the cabin-camera yawn/mouth path across a broader driver set.
 - DD-Database validates physiological drowsiness and the original heart-rate/sensor path.
 - UAH-DriveSet validates real driving-style and fuzzy vehicle-risk scoring.
-- The fused result is one `SessionSummary` timeline that can combine visual, physiological, and vehicle-risk events.
+- The fused result is one `SessionSummary` timeline scored by `driver-risk-fusion-v1`.
 
 ## Human Yawning Video
+
+### NITYMED
+
+Source: https://datasets.esdalab.ece.uop.gr/
+
+Use as the preferred public demo source once access is approved. NITYMED contains real drivers in real cars under nighttime conditions, with yawning clips and longer microsleep clips. The dataset page lists Creative Commons Attribution terms and asks users to request access with name, affiliation, and business or academic email.
+
+Suggested layout:
+
+```text
+data/nitymed/
+  Yawning/
+    Male/
+      HDTV720/
+        example.mp4
+  Microsleep/
+    Female/
+      HDTV720/
+        example.mp4
+```
+
+Prepare the manifest:
+
+```bash
+ai-driver-safety datasets prepare-nitymed \
+  --input data/nitymed \
+  --out data/manifests/nitymed.json
+```
+
+Analyze and publish a README demo after confirming the clip and citation are acceptable:
+
+```bash
+ai-driver-safety analyze \
+  --video "data/nitymed/Yawning/Male/HDTV720/example.mp4" \
+  --config configs/default.yaml \
+  --out runs/nitymed-yawning
+
+python scripts/make_real_demo_assets.py \
+  --video "data/nitymed/Yawning/Male/HDTV720/example.mp4" \
+  --config configs/default.yaml \
+  --out-run runs/nitymed-yawning \
+  --publish-docs \
+  --source-name "NITYMED yawning driver clip" \
+  --source-url "https://datasets.esdalab.ece.uop.gr/" \
+  --license-note "NITYMED, Creative Commons Attribution; cite the dataset papers."
+```
+
+Media policy:
+
+- Use full videos locally after access approval.
+- Commit only short derived README media and screenshots with attribution.
+- Do not commit the raw NITYMED dataset tree.
 
 ### YawDD
 

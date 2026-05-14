@@ -22,4 +22,3 @@ def test_mouth_aspect_ratio_detects_yawn() -> None:
 def test_horizontal_head_offset() -> None:
     assert horizontal_head_offset((40, 20, 20, 20), 100) == 0
     assert horizontal_head_offset((75, 20, 20, 20), 100) > 0.6
-

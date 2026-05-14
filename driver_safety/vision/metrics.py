@@ -39,4 +39,3 @@ def horizontal_head_offset(face_bbox: tuple[int, int, int, int], frame_width: in
     if frame_center == 0:
         return 0.0
     return abs(center_x - frame_center) / frame_center
-

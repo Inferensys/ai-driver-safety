@@ -19,14 +19,61 @@ DEFAULT_SIGNAL_WEIGHTS = {
     "speeding": 0.2,
 }
 
+FUSION_MODEL_NAME = "driver-risk-fusion-v1"
+
 
 class RiskScorer:
     def __init__(self, weights: dict[str, float] | None = None) -> None:
         self.weights = weights or DEFAULT_SIGNAL_WEIGHTS
 
     def score(self, signals: dict[str, float]) -> float:
-        weighted = sum(signals.get(name, 0.0) * weight for name, weight in self.weights.items())
-        return round(min(1.0, max(0.0, weighted)), 4)
+        evidence = [
+            _clamp(signals.get(name, 0.0)) * weight
+            for name, weight in self.weights.items()
+            if signals.get(name, 0.0) > 0
+        ]
+        fused = _noisy_or(evidence)
+        fused += self._cross_signal_boost(signals)
+        return round(_clamp(fused), 4)
+
+    def fusion_channels(self, signals: dict[str, float]) -> dict[str, float]:
+        return {
+            "vision_fatigue": max(
+                _clamp(signals.get("drowsy", 0.0)),
+                _clamp(signals.get("eyes_closed", 0.0)) * 0.85,
+                _clamp(signals.get("yawning", 0.0)) * 0.55,
+            ),
+            "visual_distraction": max(
+                _clamp(signals.get("distracted", 0.0)),
+                _clamp(signals.get("phone_use", 0.0)),
+                _clamp(signals.get("face_missing", 0.0)) * 0.6,
+            ),
+            "physiology_fatigue": _clamp(signals.get("sensor_drowsiness", 0.0)),
+            "vehicle_risk": max(
+                _clamp(signals.get("short_time_to_collision", 0.0)),
+                _clamp(signals.get("lane_drift", 0.0)) * 0.8,
+                _clamp(signals.get("hard_maneuver", 0.0)) * 0.7,
+                _clamp(signals.get("speeding", 0.0)) * 0.55,
+            ),
+        }
+
+    def _cross_signal_boost(self, signals: dict[str, float]) -> float:
+        channels = self.fusion_channels(signals)
+        boost = 0.0
+        if (
+            _clamp(signals.get("drowsy", 0.0)) >= 0.75
+            and _clamp(signals.get("eyes_closed", 0.0)) >= 0.75
+        ):
+            boost += 0.08
+        if _clamp(signals.get("drowsy", 0.0)) >= 0.6 and _clamp(signals.get("yawning", 0.0)) >= 0.5:
+            boost += 0.08
+        if channels["vision_fatigue"] >= 0.6 and channels["physiology_fatigue"] >= 0.6:
+            boost += 0.14
+        if channels["vision_fatigue"] >= 0.6 and channels["vehicle_risk"] >= 0.5:
+            boost += 0.1
+        if channels["visual_distraction"] >= 0.6 and channels["vehicle_risk"] >= 0.5:
+            boost += 0.14
+        return boost
 
     def state_from_events(self, events: list[DetectionEvent], risk_score: float) -> DriverState:
         priority = [
@@ -69,6 +116,8 @@ class RiskScorer:
         confidence_distribution = {
             signal: round(mean(scores), 4) for signal, scores in sorted(signal_scores.items())
         }
+        summary_metrics = dict(metrics)
+        summary_metrics.setdefault("fusion_model", FUSION_MODEL_NAME)
         return SessionSummary(
             session_id=session_id,
             source=source,
@@ -78,7 +127,7 @@ class RiskScorer:
             risk_timeline=risk_timeline,
             longest_unsafe_interval_seconds=round(longest_unsafe, 3),
             confidence_distribution=confidence_distribution,
-            metrics=metrics,
+            metrics=summary_metrics,
         )
 
 
@@ -93,3 +142,14 @@ def _longest_contiguous_interval(timestamps: list[float]) -> float:
             start = timestamp
         previous = timestamp
     return max(longest, previous - start)
+
+
+def _clamp(value: float) -> float:
+    return min(1.0, max(0.0, float(value)))
+
+
+def _noisy_or(evidence: list[float]) -> float:
+    probability = 1.0
+    for value in evidence:
+        probability *= 1.0 - _clamp(value)
+    return 1.0 - probability

@@ -33,9 +33,7 @@ class DDRecording:
 
 
 def fetch_dd_dryad_file_index() -> dict[str, object]:
-    versions_url = (
-        f"{DRYAD_API_BASE}/datasets/doi%3A{quote(DD_DRYAD_DOI, safe='')}/versions"
-    )
+    versions_url = f"{DRYAD_API_BASE}/datasets/doi%3A{quote(DD_DRYAD_DOI, safe='')}/versions"
     versions = _read_json_url(versions_url)
     version_items = versions.get("_embedded", {}).get("stash:versions", [])
     if not version_items:

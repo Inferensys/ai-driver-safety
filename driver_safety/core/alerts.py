@@ -34,4 +34,3 @@ class AlertPolicy:
                 )
             )
         return alerts
-

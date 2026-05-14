@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a runtime, model, dashboard, or documentation issue
+about: Report a runtime, model, dataset, or documentation issue
 title: ""
 labels: bug
 assignees: ""
@@ -19,4 +19,3 @@ assignees: ""
 - Command:
 - Config:
 - Video source:
-

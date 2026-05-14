@@ -110,7 +110,9 @@ def _draw_panel(frame: np.ndarray, x: int, y: int, w: int, h: int, *, alpha: flo
     cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
 
-def _draw_signal_bars(frame: np.ndarray, processed: ProcessedFrame, width: int, height: int) -> None:
+def _draw_signal_bars(
+    frame: np.ndarray, processed: ProcessedFrame, width: int, height: int
+) -> None:
     labels = ["eyes_closed", "drowsy", "yawning", "distracted", "phone_use"]
     start_x = max(20, width - 238)
     start_y = 24

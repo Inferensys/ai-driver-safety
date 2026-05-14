@@ -31,4 +31,3 @@ class SignalSmoother:
 
     def update(self, signals: dict[str, float]) -> dict[str, float]:
         return {name: self._windows[name].add(value) for name, value in signals.items()}
-

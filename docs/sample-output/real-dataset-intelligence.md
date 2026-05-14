@@ -6,11 +6,21 @@ The project should be evaluated as a fused driver-monitoring system: camera sign
 
 | Dataset | Validates | Data shape | Main gap |
 | --- | --- | --- | --- |
+| NITYMED: Night-Time Yawning-Microsleep-Eyeblink-driver Distraction | face_present, mouth_aspect_ratio, yawning, eyes_closed, microsleep_review_window | videos: 130, yawning_videos: 107, microsleep_videos: 21, format: MP4, 25 fps, 720p/1080p | Access requires submitting name, affiliation, and business or academic email. |
 | YawDD: Yawning Detection Dataset | face_present, mouth_aspect_ratio, yawning, talking_or_singing_context, camera_view_robustness | videos: 351, mirror_camera_videos: 322, dash_camera_videos: 29, format: 640x480 RGB AVI, 30 fps | Not a full distraction or object-recognition dataset. |
 | Drivers Drowsiness Database (DD-Database) | sensor_drowsiness, eye_movement_proxy_eog, heart_rate_proxy_ecg, fatigue_annotation_event, multimodal_risk_score | subjects: 10, trials: 20, duration_hours: 40, channels: 4 EEG, 2 EOG, 1 ECG, dryad_files: 41, signal_files: 20, annotation_files: 20, indexed_mb: 260.04 | No cabin video/object context. |
 | UAH-DriveSet | lane_drift, short_time_to_collision, hard_maneuver, speeding, driving_style_fuzzy_score | duration_minutes: 500, driver_vehicle_pairs: 6, behaviors: normal, drowsy, aggressive, road_types: motorway, secondary | License is non-commercial and prohibits redistribution of raw or modified dataset data. |
 
 ## Project Analysis
+
+### NITYMED: Night-Time Yawning-Microsleep-Eyeblink-driver Distraction
+
+- Use NITYMED as the public-facing real human demo source once dataset access is approved.
+- The yawning subset is short enough for README clips and should replace generated cabin visuals.
+- The microsleep subset is better for event-review timelines because clips are longer and include talking, looking around, and microsleep windows.
+- Because the dataset page allows distinct frames in research publications, README images should cite the dataset and avoid committing the raw full dataset.
+
+Demo policy: Preferred source for `docs/demo/real-human-demo.*` after access approval; commit only short derived assets with attribution.
 
 ### YawDD: Yawning Detection Dataset
 
@@ -41,7 +51,8 @@ Demo policy: Publish abstract metrics/charts and local commands; keep raw teleme
 
 ## Fused Solution
 
-- Vision path: YawDD validates real human yawn/mouth signals and the annotated-video/report workflow.
+- README proof path: NITYMED replaces generated visuals with real in-car yawning and microsleep footage.
+- Vision benchmark path: YawDD validates real human yawn/mouth signals and the annotated-video/report workflow.
 - Sensor path: DD-Database validates physiological drowsiness events for the heartbeat/sensor extension.
 - Vehicle path: UAH-DriveSet validates fuzzy driving-style scoring from real car telemetry.
-- Fusion path: SessionSummary combines camera, physiological, and vehicle-risk events into one timeline.
+- Fusion path: driver-risk-fusion-v1 combines camera, physiological, and vehicle-risk events into one timeline.

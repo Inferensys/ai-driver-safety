@@ -7,7 +7,7 @@ AI Driver Safety is designed to run locally first. The default reliable path is 
 Use:
 
 ```bash
-ai-driver-safety analyze --video samples/demo-driving.mp4 --config configs/edge-cpu.yaml --out runs/edge-cpu
+ai-driver-safety analyze --video data/approved-demo/driver-yawning.mp4 --config configs/edge-cpu.yaml --out runs/edge-cpu
 ```
 
 `configs/edge-cpu.yaml` processes every second frame and writes output at 15 FPS.
@@ -50,4 +50,4 @@ Every run summary includes:
 - estimated runtime FPS
 - face detector provider
 - object detector provider
-
+- fusion model name

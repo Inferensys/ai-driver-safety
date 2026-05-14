@@ -16,4 +16,3 @@ def test_invalid_config_rejected(tmp_path: Path) -> None:
     path.write_text("vision:\n  process_every_n_frames: 0\n", encoding="utf-8")
     with pytest.raises(ValueError):
         load_config(path)
-

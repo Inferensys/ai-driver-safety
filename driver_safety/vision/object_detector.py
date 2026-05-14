@@ -29,8 +29,7 @@ class ObjectObservation:
 class ObjectDetector(Protocol):
     provider: str
 
-    def detect(self, packet: FramePacket) -> list[ObjectObservation]:
-        ...
+    def detect(self, packet: FramePacket) -> list[ObjectObservation]: ...
 
 
 class NoopObjectDetector:
@@ -40,8 +39,8 @@ class NoopObjectDetector:
         return []
 
 
-class SyntheticObjectDetector:
-    provider = "synthetic"
+class FixtureObjectDetector:
+    provider = "fixture"
 
     def detect(self, packet: FramePacket) -> list[ObjectObservation]:
         phase = packet.timestamp % 54
@@ -72,7 +71,9 @@ class OnnxObjectDetector:
             raise FileNotFoundError(f"ONNX model not found: {model_path}")
         self.input_size = input_size
         self.labels = _load_labels(labels_path)
-        self.session = ort.InferenceSession(str(model_path), providers=ort.get_available_providers())
+        self.session = ort.InferenceSession(
+            str(model_path), providers=ort.get_available_providers()
+        )
         self.input_name = self.session.get_inputs()[0].name
 
     def detect(self, packet: FramePacket) -> list[ObjectObservation]:
@@ -81,15 +82,17 @@ class OnnxObjectDetector:
         image = image.astype(np.float32) / 255.0
         image = np.transpose(image, (2, 0, 1))[None, ...]
         outputs = self.session.run(None, {self.input_name: image})
-        return _parse_yolo_like(outputs[0], frame.shape[1], frame.shape[0], self.labels, self.provider)
+        return _parse_yolo_like(
+            outputs[0], frame.shape[1], frame.shape[0], self.labels, self.provider
+        )
 
 
 def create_object_detector(config: DriverSafetyConfig) -> ObjectDetector:
     obj_config = config.object_detector
     if not obj_config.enabled or obj_config.provider == "none":
         return NoopObjectDetector()
-    if obj_config.provider == "synthetic":
-        return SyntheticObjectDetector()
+    if obj_config.provider == "fixture":
+        return FixtureObjectDetector()
     if obj_config.provider == "onnx":
         return OnnxObjectDetector(Path(obj_config.model_path), Path(obj_config.labels_path))
     raise ValueError(f"Unsupported object detector provider: {obj_config.provider}")
@@ -138,4 +141,3 @@ def _parse_yolo_like(
             )
         )
     return observations
-

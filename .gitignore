@@ -11,10 +11,8 @@ htmlcov/
 dist/
 build/
 node_modules/
-apps/studio/dist/
 data/
 models/
 runs/
 reports/
 *.log
-

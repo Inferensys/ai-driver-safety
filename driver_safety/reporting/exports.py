@@ -149,4 +149,3 @@ REPORT_TEMPLATE = """<!doctype html>
 </body>
 </html>
 """
-

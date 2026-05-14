@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["master", "revamp/**"]
+    branches: ["master", "revamp/**", "dataset/**"]
   pull_request:
     branches: ["master"]
 
@@ -27,4 +27,3 @@ jobs:
         run: mypy driver_safety
       - name: Test
         run: pytest
-

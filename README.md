@@ -1,129 +1,116 @@
 # AI Driver Safety
 
-AI Driver Safety is a local-first **Intelligent Driver Monitoring System** for autonomous and assisted driving use cases. It analyzes camera or video input for drowsiness, eye closure, yawning, distraction, phone use, missing-face states, and driver risk over time.
+AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, phone use, and missing-face events.
 
-The project keeps the original framing: computer vision, driver activity recognition, heart-rate and driving-style extension points, fuzzy/risk scoring, and real-time alerts. The revamp turns the old script collection into a package, CLI, report generator, and review dashboard.
+The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path first with real human cabin recordings, then keeps sensor and car-data adapters ready for dataset validation.
 
-> This is an open-source reference application, not certified automotive safety software.
+> Research and demo software only. This is not certified automotive safety software.
 
-## Demo And Outputs
+## Real Demo
 
-The repo ships a deterministic demo so a fresh clone can prove the pipeline without downloading restricted human datasets.
+The README demo uses approved human cabin clips. No generated cabin animation is used as public proof.
 
-![AI Driver Safety annotated demo](docs/demo/demo.gif)
+![AI Driver Safety real human demo](docs/demo/real-human-demo.gif)
 
-- Annotated video: [`docs/demo/ai-driver-safety-demo.mp4`](docs/demo/ai-driver-safety-demo.mp4)
-- Live monitor screenshot: [`docs/screenshots/live-monitor.png`](docs/screenshots/live-monitor.png)
-- Event timeline screenshot: [`docs/screenshots/event-timeline.png`](docs/screenshots/event-timeline.png)
-- Sample events: [`docs/sample-output/events.json`](docs/sample-output/events.json)
-- Sample summary: [`docs/sample-output/summary.json`](docs/sample-output/summary.json)
+**Main demo result**
 
-Real dataset intelligence is also generated and committed as project-level analysis, with raw dataset media kept out of git.
+| Source | Duration | Frames | Detector | Result |
+| --- | ---: | ---: | --- | --- |
+| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `face_missing: 29`; longest unsafe window `3.42s`; estimated runtime `126 FPS` |
 
-![Real dataset intelligence](docs/screenshots/dataset-intelligence.png)
+**Artifacts**
 
-- Dataset intelligence JSON: [`docs/sample-output/real-dataset-intelligence.json`](docs/sample-output/real-dataset-intelligence.json)
-- Dataset intelligence report: [`docs/sample-output/real-dataset-intelligence.md`](docs/sample-output/real-dataset-intelligence.md)
-- DD-Database Dryad file index: [`docs/sample-output/dd-database-dryad-files.json`](docs/sample-output/dd-database-dryad-files.json)
+- [Annotated MP4](docs/demo/real-human-demo.mp4)
+- [Session summary JSON](docs/sample-output/real-human-summary.json)
+- [Event timeline JSON](docs/sample-output/real-human-events.json)
+- [HTML report source run metadata](docs/sample-output/real-human-demo-source.json)
+- [Batch summary for all four clips](docs/sample-output/real-human-clip-batch-summary.json)
 
-## What It Does
+## Demo Gallery
 
-- Analyzes a webcam or video file frame by frame.
-- Emits typed driver-state events: `attentive`, `eyes_closed`, `drowsy`, `yawning`, `distracted`, `phone_use`, and `face_missing`.
-- Renders an annotated MP4 with overlays.
-- Exports `events.json`, `summary.json`, `events.csv`, and `report.html`.
-- Provides a local Studio dashboard for reviewing sessions and event timelines.
-- Supports MediaPipe Face Landmarker and optional ONNX object detection hooks while keeping model weights out of the repo.
+| Clip | Output | What the system flags |
+| --- | --- | --- |
+| 1 | ![Clip 1: eye closure and yawn events](docs/demo/real-human-clip-1.gif) | `eyes_closed: 57`, `drowsy: 20`, `yawning: 12` |
+| 2 | ![Clip 2: strongest drowsiness and yawn timeline](docs/demo/real-human-clip-2.gif) | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `face_missing: 29` |
+| 3 | ![Clip 3: head drop and face-missing intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `face_missing: 65` |
+| 4 | ![Clip 4: drowsy posture and face-missing window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `face_missing: 79` |
 
-## Project Framing
+![AI Driver Safety real clip batch](docs/screenshots/real-human-clip-batch.png)
 
-**Deep Learning based driver monitoring system for activity and object recognition.**
+## What A Car/OEM Reader Sees In 60 Seconds
 
-### Problem
+- A real driver video goes in.
+- The system writes an annotated MP4, event JSON, CSV, summary JSON, and HTML report.
+- The report shows when the driver had eye closure, yawning, drowsy windows, phone/object events, or no visible face.
+- The same event model accepts physiological drowsiness data and real vehicle telemetry.
+- The final output is one risk timeline, not a pile of disconnected demos.
 
-Modern passenger cars and assisted/autonomous vehicles need cabin intelligence, not just road perception. By studying a driver's posture, face, body movement, objects, and vehicle behavior, an interior monitoring system can estimate alertness, attention, focus, impairment, and readiness to take control. The same cabin-sensing direction can support passenger position, safety-belt status, forgotten-object detection, multimodal HMI, mood recognition, medical-emergency escalation, and personalized driving experience.
+## Algorithm
 
-### Solution Approach
+The scorer is `driver-risk-fusion-v1`.
 
-AI Driver Safety keeps the original three-path idea and makes it testable:
+1. **Vision evidence**: MediaPipe landmarks produce eye aspect ratio, mouth aspect ratio, head offset, face presence, and optional ONNX phone/object detections.
+2. **Temporal gating**: frame counters prevent one noisy frame from becoming an alert. Eye closure, yawn, distraction, and missing-face states must persist for configured windows.
+3. **Signal smoothing**: raw per-frame signals are smoothed before risk scoring.
+4. **Evidence fusion**: signals are combined with a noisy-OR rule, so multiple moderate cues can raise risk without naive addition.
+5. **Cross-signal boosts**: risk increases when combinations matter, such as drowsy + eyes closed, drowsy + yawning, visual fatigue + physiological fatigue, visual fatigue + vehicle risk, or distraction + short time-to-collision.
+6. **Explainable outputs**: every alert is written as a `DetectionEvent` with timestamp, frame index, signal, score, severity, bounding box, landmarks, and metadata.
 
-1. **Computer vision**: identify driver state from camera/video using face, eye, mouth, head-pose, activity, object, and gesture signals.
-2. **Physiological sensors**: support heart-rate and drowsiness signals from steering-wheel, wearable, or other biometric inputs.
-3. **Driving style AI**: analyze accelerations, braking, turns, speed, lane drift, tailgating, and contextual thresholds with a fuzzy/risk model.
+This keeps the original fuzzy-logic concept practical. The system can show why risk rose.
 
-The first reliable release is vision-first, but the architecture intentionally keeps heart-rate and driving-style signals in scope.
+## Original Product Thesis
 
-### Core Capabilities
+**Deep learning based driver monitoring system for activity and object recognition.**
 
-- **Driver identification**: recognize the driver so a vehicle can restore preferences and settings.
-- **Activity recognition**: detect dangerous activities such as phone use, eating, drinking, looking away, reaching, and passenger interaction.
-- **Driver impairment detection**: detect drowsiness, distraction, yawning, eye closure, missing face, and mood-like signals in real time.
-- **Attentiveness monitoring**: ensure the driver is looking toward the road and can respond to dangerous situations.
-- **Eye/HMI control path**: support future UI selection by gaze or eyes.
-- **Hand gesture control**: leave a plugin path for neural-network hand gestures for volume/channel/vehicle controls.
-- **Heart-rate monitoring**: support steering-wheel or wearable heart-rate signals for fatigue and medical-risk detection.
-- **Alerting**: trigger audio, visual, haptic, or wearable alerts when risk persists.
+Passenger cars need cabin intelligence, not only road perception. A driver monitoring system can read observable cabin cues and vehicle signals to help decide whether the driver is ready to take control, distracted, fatigued, or missing from the camera view.
 
-### Driving Style Classifier AI
+The original idea had three parts:
 
-The driving-style module treats road behavior as an AI/fuzzy-logic problem. Inputs include:
+- **Computer vision**: drowsiness, distraction, yawn, eye closure, activity recognition, object recognition, driver ID hooks, hand-gesture hooks, and real-time alerts.
+- **Physiological sensing**: heart-rate or wearable-style signals for fatigue and medical-risk cues.
+- **Driving style AI**: accelerations, braking, turns, speed, lane drift, time-to-collision, tailgating, and road-context thresholds scored with fuzzy logic.
 
-- Sudden accelerations or decelerations.
-- Sudden braking.
-- Sharp turns.
-- Starts, stops, speed, and turn events.
-- Maximum and minimum engine RPM when available.
-- Red-light jumps.
-- Tailgating cases.
-- Aggressive honking.
-- Wrong-side overtaking.
+This repo now implements the first production-shaped path: video analysis, event extraction, fusion scoring, report generation, and dataset adapters.
 
-The threshold criteria should be contextual. Harsh acceleration on a city road, state highway, and national highway should not use one naive threshold because road type and speed limits change the meaning of the same maneuver.
-
-### Fuzzy Logic Model
-
-The risk classifier follows the classic fuzzy-logic flow:
-
-1. **Fuzzification**: define membership functions and linguistic variables for visual, physiological, and driving-style inputs.
-2. **Rules evaluation**: apply fuzzy rules to combine drowsiness, distraction, yawn, eye closure, joy/mood, sensor fatigue, and vehicle-risk signals.
-3. **Defuzzification**: convert the fused driver-state estimate into crisp outputs: event severity, risk score, alert, and session summary.
-
-### Novelty
-
-Most driver monitoring demos stop at image processing. This project keeps the stronger original idea: combine computer vision, physiological drowsiness signals, and vehicle driving-style analysis into one driver-risk timeline.
-
-## Quickstart
+## Run It
 
 ```bash
 git clone https://github.com/prasad-kumkar/ai-driver-safety.git
 cd ai-driver-safety
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[dev]"
-```
-
-Generate the repo-safe synthetic demo and run analysis:
-
-```bash
-python scripts/make_demo_assets.py
-ai-driver-safety analyze --video samples/demo-driving.mp4 --config configs/synthetic-demo.yaml --out runs/demo
-```
-
-Open the report:
-
-```bash
-open runs/demo/report.html
-```
-
-Run with a real video:
-
-```bash
+python -m pip install -e ".[dev,vision]"
 python scripts/download_models.py --mediapipe-face
-python -m pip install -e ".[vision,onnx,api]"
-ai-driver-safety analyze --video path/to/driving-video.mp4 --config configs/default.yaml --out runs/real-video
 ```
 
-Run webcam mode:
+Analyze a real driver clip:
+
+```bash
+ai-driver-safety analyze \
+  --video data/approved-demo/driver-yawning.mp4 \
+  --config configs/default.yaml \
+  --out runs/real-human-demo
+```
+
+Open the generated report:
+
+```bash
+open runs/real-human-demo/report.html
+```
+
+Regenerate README media from an approved clip:
+
+```bash
+python scripts/make_real_demo_assets.py \
+  --video data/approved-demo/driver-yawning.mp4 \
+  --config configs/default.yaml \
+  --out-run runs/real-human-demo \
+  --publish-docs \
+  --source-name "Approved real driver/yawning clip" \
+  --license-note "Approved for public README demo use"
+```
+
+Webcam mode:
 
 ```bash
 ai-driver-safety run --source webcam --config configs/default.yaml
@@ -132,10 +119,9 @@ ai-driver-safety run --source webcam --config configs/default.yaml
 ## CLI
 
 ```bash
-ai-driver-safety analyze --video samples/demo-driving.mp4 --out runs/demo
+ai-driver-safety analyze --video data/approved-demo/driver-yawning.mp4 --out runs/real-human-demo
 ai-driver-safety run --source webcam --config configs/default.yaml
-ai-driver-safety report --run runs/demo --format html,json,csv
-ai-driver-safety studio --run runs/demo
+ai-driver-safety report --run runs/real-human-demo --format html,json,csv
 ai-driver-safety datasets intelligence
 ```
 
@@ -150,51 +136,60 @@ pipeline = create_pipeline(config)
 result = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.0, frame_index=0))
 ```
 
-## Project Structure
+## Project Shape
 
 ```text
 driver_safety/
-  core/        events, scoring, smoothing, alert policies
-  vision/      face landmarks, eye closure, yawn, head offset, object detector hooks
-  io/          video/webcam sources and overlays
-  runtime/     video and webcam processing loops
-  reporting/   JSON, CSV, and HTML exports
-  api/         optional FastAPI service
-apps/studio/   React/Vite dashboard
-configs/       threshold and runtime profiles
-legacy/        original scripts and assets
-docs/          architecture, datasets, deployment, plugin guide
+  core/        events, smoothing, alert cooldowns, driver-risk fusion
+  vision/      MediaPipe landmarks, EAR/MAR metrics, head offset, ONNX object hook
+  io/          video/webcam sources and annotated video writer
+  runtime/     analyze/run loops and latency metrics
+  reporting/   JSON, CSV, HTML report exports
+  datasets/    NITYMED, YawDD, DD-Database, UAH-DriveSet adapters
+configs/       demo, night, edge CPU, and internal fixture configs
+docs/          architecture, datasets, edge notes, demo assets
+legacy/        original webcam scripts, Haar assets, heartbeat sketch
 ```
 
-## How It Works
+## Real Dataset Work
 
-1. **Data acquisition**: webcam, video file, or future RTSP source.
-2. **Sensor acquisition**: optional heart-rate, EOG/ECG/EEG, steering-wheel, accelerometer, GPS, lane, and vehicle telemetry.
-3. **Pre-processing**: frame timestamps, filtering on sensor data, optional frame skipping, detector setup.
-4. **Feature extraction**: deep-learning/computer-vision features for activity and object recognition; sensor features for drowsiness and driving style.
-5. **Driver state classification**: smoothed signals become driver-state events.
-6. **Fuzzy/risk scoring**: weighted fuzzy-style risk score is computed per frame or sensor interval.
-7. **Alerting and reporting**: event timeline, annotated video, JSON/CSV/HTML exports.
+Raw dataset media stays under `data/` and out of git. The repo commits analysis artifacts, charts, and metadata.
 
-## Studio Dashboard
+![Real dataset intelligence](docs/screenshots/dataset-intelligence.png)
+
+| Dataset | Why it matters here | Signals used by this repo | Output |
+| --- | --- | --- | --- |
+| NITYMED | Real in-car yawning and microsleep video for README-grade demos | `yawning`, `eyes_closed`, `face_missing`, microsleep review windows | annotated GIF/MP4 after access approval |
+| YawDD | Real human yawning benchmark across in-car faces, eyewear, and lighting | `mouth_aspect_ratio`, `yawning`, face tracking quality | local annotated video and event timeline |
+| DD-Database | Physiological drowsiness data from EEG, EOG, ECG, and annotations | `sensor_drowsiness`, EOG eye-movement proxy, ECG heart-rate proxy | `sensor_events.json`, `sensor_summary.json` |
+| UAH-DriveSet | Real car telemetry for driving-style risk | `lane_drift`, `short_time_to_collision`, `hard_maneuver`, `speeding` | `vehicle_events.json`, `vehicle_summary.json` |
+
+Generate the project-level dataset analysis:
 
 ```bash
-cd apps/studio
-npm install
-npm run dev
+ai-driver-safety datasets intelligence \
+  --out docs/sample-output/real-dataset-intelligence.json \
+  --markdown docs/sample-output/real-dataset-intelligence.md \
+  --chart docs/screenshots/dataset-intelligence.png
 ```
 
-The Studio dashboard is a local review surface for event timelines, signal scores, current driver state, alert stack, and exported artifacts.
+Dataset artifacts:
+
+- [Dataset intelligence JSON](docs/sample-output/real-dataset-intelligence.json)
+- [Dataset intelligence report](docs/sample-output/real-dataset-intelligence.md)
+- [DD-Database Dryad file index](docs/sample-output/dd-database-dryad-files.json)
+
+See [docs/datasets.md](docs/datasets.md) for dataset-specific commands and media rules.
 
 ## Models
 
-Model weights are not part of the active runtime tree.
+Model weights are not committed.
 
 ```bash
 python scripts/download_models.py --mediapipe-face
 ```
 
-Optional ONNX object detector models should be placed under `models/` and referenced from config:
+Optional ONNX phone/object detector:
 
 ```yaml
 object_detector:
@@ -204,85 +199,9 @@ object_detector:
   labels_path: models/driver-objects.labels
 ```
 
-## Validation Datasets
-
-Use real datasets for validation and benchmarking, subject to each dataset's license and access rules. Dataset media and raw sensor files stay under `data/`, which is gitignored.
-
-Generate the project-specific dataset intelligence report:
-
-```bash
-ai-driver-safety datasets intelligence \
-  --out docs/sample-output/real-dataset-intelligence.json \
-  --markdown docs/sample-output/real-dataset-intelligence.md \
-  --chart docs/screenshots/dataset-intelligence.png
-```
-
-| Dataset | Project Aim | Signals Validated | Output |
-| --- | --- | --- | --- |
-| YawDD | Real human yawning and mouth-state video | `face_present`, `mouth_aspect_ratio`, `yawning`, camera robustness | local annotated video, event timeline, allowed screenshots only |
-| DD-Database | Drowsiness via physiological sensors | `sensor_drowsiness`, EOG eye-movement proxy, ECG heart-rate proxy | `sensor_events.json`, `sensor_summary.json` |
-| UAH-DriveSet | Real car-sensor driving style | `lane_drift`, `short_time_to_collision`, `hard_maneuver`, `speeding` | `vehicle_events.json`, `vehicle_summary.json` |
-
-### Real Yawning Video
-
-YawDD is the primary real-human yawning validation track. It contains in-car videos of drivers silently driving, talking/singing, and yawning.
-
-```bash
-ai-driver-safety datasets prepare-yawdd \
-  --input data/yawdd \
-  --participants-info data/yawdd/ParticipantsInformation.csv \
-  --out data/manifests/yawdd.json
-
-ai-driver-safety analyze \
-  --video "data/yawdd/mirror-camera/23-FemaleNoGlasses-Talking&Yawning.avi" \
-  --config configs/default.yaml \
-  --out runs/yawdd-23
-```
-
-YawDD allows local research use of all videos, but public screenshots are controlled per participant. Do not commit full YawDD videos or annotated derivatives to this repo unless the dataset terms and participant metadata explicitly allow it.
-
-### Physiological Drowsiness Sensors
-
-DD-Database is the primary sensor-drowsiness track. It contains EEG, EOG, ECG, and annotation EDF files collected during a driving-simulator protocol designed to induce drowsiness.
-
-The repo includes a real Dryad file-index sample at `docs/sample-output/dd-database-dryad-files.json`; it is metadata only, not raw physiological data.
-
-```bash
-ai-driver-safety datasets dd-index --out data/dd-database/dryad-files.json
-ai-driver-safety datasets prepare-dd \
-  --input data/dd-database/raw \
-  --download-index data/dd-database/dryad-files.json \
-  --out data/manifests/dd-database.json
-
-python -m pip install -e ".[datasets]"
-ai-driver-safety datasets dd-events \
-  --input data/dd-database/raw \
-  --out runs/dd-database-sensors
-```
-
-### Real Car Sensor Telemetry
-
-UAH-DriveSet is the primary car-sensor validation track. It contains real naturalistic driving sessions with smartphone accelerometer, GPS, lane, vehicle, OpenStreetMap, behavior labels, and trip videos.
-
-```bash
-ai-driver-safety datasets prepare-uah \
-  --input data/uah-driveset \
-  --out data/manifests/uah-driveset.json
-
-ai-driver-safety datasets uah-events \
-  --input data/uah-driveset \
-  --out runs/uah-driveset-sensors
-```
-
-Other useful benchmarks remain supported as future evaluation tracks:
-
-- NTHU Driver Drowsiness Detection Dataset
-- State Farm Distracted Driver Detection
-- Drive&Act
-
-See `docs/datasets.md`.
-
 ## Development
+
+Keep tests focused on the algorithm and data path:
 
 ```bash
 ruff check .
@@ -292,4 +211,4 @@ pytest
 
 ## Safety Note
 
-AI Driver Safety can support research, prototyping, and product demos. It should not be presented as a certified automotive safety system, and it should not be used as the only safety layer in a real vehicle.
+Use this for research, demos, and prototypes. Do not use it as the only safety layer in a real vehicle.

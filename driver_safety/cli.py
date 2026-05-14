@@ -12,6 +12,7 @@ from driver_safety.config import load_config
 from driver_safety.datasets import (
     all_dataset_specs,
     build_dd_manifest,
+    build_nitymed_manifest,
     build_uah_manifest,
     build_yawdd_manifest,
     fetch_dd_dryad_file_index,
@@ -62,14 +63,18 @@ def run(
 
 @app.command()
 def report(
-    run_dir: Annotated[Path, typer.Option("--run", exists=True, file_okay=False)] = Path("runs/demo"),
+    run_dir: Annotated[Path, typer.Option("--run", exists=True, file_okay=False)] = Path(
+        "runs/demo"
+    ),
     format: Annotated[str, typer.Option("--format")] = "html,json,csv",
 ) -> None:
     """Regenerate report exports from a completed run directory."""
     events_path = run_dir / "events.json"
     summary_path = run_dir / "summary.json"
     if not events_path.exists() or not summary_path.exists():
-        raise typer.BadParameter(f"Run directory must contain events.json and summary.json: {run_dir}")
+        raise typer.BadParameter(
+            f"Run directory must contain events.json and summary.json: {run_dir}"
+        )
     from driver_safety.core.models import DetectionEvent, DriverState, SessionSummary, Severity
 
     event_data = json.loads(events_path.read_text(encoding="utf-8"))
@@ -101,24 +106,6 @@ def report(
         console.print(f"json: {summary_path}, {events_path}")
 
 
-@app.command()
-def studio(
-    run_dir: Annotated[Path, typer.Option("--run", exists=True, file_okay=False)] = Path("runs/demo"),
-    host: Annotated[str, typer.Option("--host")] = "127.0.0.1",
-    port: Annotated[int, typer.Option("--port")] = 8000,
-) -> None:
-    """Serve the local FastAPI API for Studio review."""
-    try:
-        import uvicorn
-    except Exception as exc:  # pragma: no cover - optional dependency
-        raise typer.BadParameter(
-            "Studio requires API dependencies. Install with `pip install ai-driver-safety[api]`."
-        ) from exc
-    from driver_safety.api.service import create_app
-
-    uvicorn.run(create_app(run_dir), host=host, port=port)
-
-
 @datasets_app.command("list")
 def list_datasets() -> None:
     """Show the supported real-dataset validation tracks."""
@@ -134,9 +121,7 @@ def list_datasets() -> None:
 @datasets_app.command("prepare-yawdd")
 def prepare_yawdd(
     input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
-    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
-        "data/manifests/yawdd.json"
-    ),
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path("data/manifests/yawdd.json"),
     participants_info: Annotated[
         Path | None,
         typer.Option("--participants-info", exists=True, dir_okay=False),
@@ -145,6 +130,19 @@ def prepare_yawdd(
     """Index a local YawDD copy for real human yawning validation."""
     manifest = build_yawdd_manifest(input_dir, out, participants_info)
     console.print(f"YawDD clips indexed: {manifest['clip_count']}")
+    console.print(f"manifest: {out}")
+
+
+@datasets_app.command("prepare-nitymed")
+def prepare_nitymed(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "data/manifests/nitymed.json"
+    ),
+) -> None:
+    """Index a local NITYMED copy for real in-car yawning and microsleep validation."""
+    manifest = build_nitymed_manifest(input_dir, out)
+    console.print(f"NITYMED clips indexed: {manifest['clip_count']}")
     console.print(f"manifest: {out}")
 
 
@@ -181,9 +179,7 @@ def dd_index(
 @datasets_app.command("dd-events")
 def dd_events(
     input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
-    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path(
-        "runs/dd-database-sensors"
-    ),
+    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path("runs/dd-database-sensors"),
 ) -> None:
     """Export drowsiness events from DD-Database annotation files."""
     artifacts = write_dd_sensor_events(input_dir, out)
@@ -207,7 +203,9 @@ def prepare_uah(
 @datasets_app.command("uah-events")
 def uah_events(
     input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
-    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path("runs/uah-driveset-sensors"),
+    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path(
+        "runs/uah-driveset-sensors"
+    ),
 ) -> None:
     """Export vehicle-risk events from UAH-DriveSet telemetry files."""
     artifacts = write_uah_vehicle_events(input_dir, out)
@@ -230,6 +228,9 @@ def dataset_intelligence(
         "docs/sample-output/dd-database-dryad-files.json"
     ),
     yawdd_manifest: Annotated[Path | None, typer.Option("--yawdd-manifest", dir_okay=False)] = None,
+    nitymed_manifest: Annotated[
+        Path | None, typer.Option("--nitymed-manifest", dir_okay=False)
+    ] = None,
     uah_manifest: Annotated[Path | None, typer.Option("--uah-manifest", dir_okay=False)] = None,
 ) -> None:
     """Generate project-specific intelligence analysis for the real validation datasets."""
@@ -239,6 +240,9 @@ def dataset_intelligence(
         output_chart=chart,
         dd_file_index=dd_file_index if dd_file_index and dd_file_index.exists() else None,
         yawdd_manifest=yawdd_manifest if yawdd_manifest and yawdd_manifest.exists() else None,
+        nitymed_manifest=(
+            nitymed_manifest if nitymed_manifest and nitymed_manifest.exists() else None
+        ),
         uah_manifest=uah_manifest if uah_manifest and uah_manifest.exists() else None,
     )
     for name, path in artifacts.items():

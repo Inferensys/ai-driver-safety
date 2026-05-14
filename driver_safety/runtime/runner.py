@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean, quantiles
@@ -29,7 +28,9 @@ def analyze_video(
     writer: AnnotatedVideoWriter | None = None
     if config.runtime.write_video:
         output_fps = config.runtime.output_fps or source.fps
-        writer = AnnotatedVideoWriter(output / "annotated.mp4", output_fps, (source.width, source.height))
+        writer = AnnotatedVideoWriter(
+            output / "annotated.mp4", output_fps, (source.width, source.height)
+        )
     processed_frames = 0
     last_timestamp = 0.0
     try:
@@ -79,18 +80,6 @@ def run_webcam(config: DriverSafetyConfig, index: int = 0) -> None:
     finally:
         source.close()
         cv2.destroyAllWindows()
-
-
-def copy_demo_artifacts(run_dir: str | Path, docs_dir: str | Path) -> None:
-    run = Path(run_dir)
-    docs = Path(docs_dir)
-    (docs / "demo").mkdir(parents=True, exist_ok=True)
-    (docs / "sample-output").mkdir(parents=True, exist_ok=True)
-    if (run / "annotated.mp4").exists():
-        shutil.copy2(run / "annotated.mp4", docs / "demo" / "ai-driver-safety-demo.mp4")
-    for name in ("summary.json", "events.json"):
-        if (run / name).exists():
-            shutil.copy2(run / name, docs / "sample-output" / name)
 
 
 def _session_id(video_path: str | Path) -> str:

@@ -38,8 +38,7 @@ def build_uah_manifest(
     if not root.exists():
         raise FileNotFoundError(f"UAH-DriveSet input directory does not exist: {root}")
     sessions = [
-        _session_from_dir(session_dir, root)
-        for session_dir in sorted(_find_session_dirs(root))
+        _session_from_dir(session_dir, root) for session_dir in sorted(_find_session_dirs(root))
     ]
     behavior_counts: dict[str, int] = {}
     for session in sessions:
@@ -109,7 +108,9 @@ def _find_session_dirs(root: Path) -> set[Path]:
 
 
 def _session_from_dir(session_dir: Path, root: Path) -> UAHSession:
-    sensor_files = [file_name for file_name in UAH_SENSOR_FILES if (session_dir / file_name).exists()]
+    sensor_files = [
+        file_name for file_name in UAH_SENSOR_FILES if (session_dir / file_name).exists()
+    ]
     return UAHSession(
         path=str(session_dir.relative_to(root)),
         behavior=_infer_behavior(session_dir),
@@ -164,7 +165,10 @@ def _short_ttc_events(path: Path) -> list[DetectionEvent]:
                 score=round(score, 4),
                 severity=Severity.CRITICAL if ttc_value < 1.0 else Severity.WARNING,
                 message=f"Short time to collision {ttc_value:.2f}s",
-                metadata={"lead_distance_m": float(lead_distance), "time_to_collision_s": ttc_value},
+                metadata={
+                    "lead_distance_m": float(lead_distance),
+                    "time_to_collision_s": ttc_value,
+                },
             )
         )
     return _thin_events(events, min_gap_seconds=2.0)
