@@ -1,16 +1,29 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Annotated
 
 import typer
 from rich.console import Console
+from rich.table import Table
 
 from driver_safety.config import load_config
+from driver_safety.datasets import (
+    all_dataset_specs,
+    build_dd_manifest,
+    build_uah_manifest,
+    build_yawdd_manifest,
+    fetch_dd_dryad_file_index,
+    write_dd_sensor_events,
+    write_uah_vehicle_events,
+)
 from driver_safety.reporting.exports import write_events_csv, write_html_report
 from driver_safety.runtime.runner import analyze_video, run_webcam
 
 app = typer.Typer(no_args_is_help=True, help="AI Driver Safety local driver monitoring CLI.")
+datasets_app = typer.Typer(no_args_is_help=True, help="Prepare real validation datasets.")
+app.add_typer(datasets_app, name="datasets")
 console = Console()
 
 
@@ -52,8 +65,6 @@ def report(
     format: Annotated[str, typer.Option("--format")] = "html,json,csv",
 ) -> None:
     """Regenerate report exports from a completed run directory."""
-    import json
-
     events_path = run_dir / "events.json"
     summary_path = run_dir / "summary.json"
     if not events_path.exists() or not summary_path.exists():
@@ -107,6 +118,101 @@ def studio(
     uvicorn.run(create_app(run_dir), host=host, port=port)
 
 
+@datasets_app.command("list")
+def list_datasets() -> None:
+    """Show the supported real-dataset validation tracks."""
+    table = Table(title="AI Driver Safety real dataset tracks")
+    table.add_column("Key")
+    table.add_column("Use case")
+    table.add_column("Policy")
+    for spec in all_dataset_specs():
+        table.add_row(spec.key, spec.use_case, spec.media_policy)
+    console.print(table)
+
+
+@datasets_app.command("prepare-yawdd")
+def prepare_yawdd(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "data/manifests/yawdd.json"
+    ),
+    participants_info: Annotated[
+        Path | None,
+        typer.Option("--participants-info", exists=True, dir_okay=False),
+    ] = None,
+) -> None:
+    """Index a local YawDD copy for real human yawning validation."""
+    manifest = build_yawdd_manifest(input_dir, out, participants_info)
+    console.print(f"YawDD clips indexed: {manifest['clip_count']}")
+    console.print(f"manifest: {out}")
+
+
+@datasets_app.command("prepare-dd")
+def prepare_dd(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "data/manifests/dd-database.json"
+    ),
+    download_index: Annotated[Path | None, typer.Option("--download-index", file_okay=True)] = None,
+) -> None:
+    """Index the Dryad DD-Database physiological drowsiness EDF files."""
+    manifest = build_dd_manifest(input_dir, out, dryad_index_path=download_index)
+    console.print(f"DD-Database recordings indexed: {manifest['recording_count']}")
+    console.print(f"manifest: {out}")
+    if download_index:
+        console.print(f"dryad file index: {download_index}")
+
+
+@datasets_app.command("dd-index")
+def dd_index(
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "data/dd-database/dryad-files.json"
+    ),
+) -> None:
+    """Fetch the Dryad DD-Database file index without downloading raw EDF files."""
+    index = fetch_dd_dryad_file_index()
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(index, indent=2), encoding="utf-8")
+    console.print(f"DD-Database Dryad files indexed: {index['file_count']}")
+    console.print(f"index: {out}")
+
+
+@datasets_app.command("dd-events")
+def dd_events(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path(
+        "runs/dd-database-sensors"
+    ),
+) -> None:
+    """Export drowsiness events from DD-Database annotation files."""
+    artifacts = write_dd_sensor_events(input_dir, out)
+    for name, path in artifacts.items():
+        console.print(f"{name}: {path}")
+
+
+@datasets_app.command("prepare-uah")
+def prepare_uah(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=True)] = Path(
+        "data/manifests/uah-driveset.json"
+    ),
+) -> None:
+    """Index a local UAH-DriveSet copy for vehicle-sensor validation."""
+    manifest = build_uah_manifest(input_dir, out)
+    console.print(f"UAH-DriveSet sessions indexed: {manifest['session_count']}")
+    console.print(f"manifest: {out}")
+
+
+@datasets_app.command("uah-events")
+def uah_events(
+    input_dir: Annotated[Path, typer.Option("--input", exists=True, file_okay=False)],
+    out: Annotated[Path, typer.Option("--out", file_okay=False)] = Path("runs/uah-driveset-sensors"),
+) -> None:
+    """Export vehicle-risk events from UAH-DriveSet telemetry files."""
+    artifacts = write_uah_vehicle_events(input_dir, out)
+    for name, path in artifacts.items():
+        console.print(f"{name}: {path}")
+
+
 if __name__ == "__main__":
     app()
-

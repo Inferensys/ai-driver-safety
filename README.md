@@ -127,10 +127,62 @@ object_detector:
 
 ## Validation Datasets
 
-Use public datasets for validation and benchmarking, subject to each dataset's license and access rules:
+Use real datasets for validation and benchmarking, subject to each dataset's license and access rules. Dataset media and raw sensor files stay under `data/`, which is gitignored.
+
+### Real Yawning Video
+
+YawDD is the primary real-human yawning validation track. It contains in-car videos of drivers silently driving, talking/singing, and yawning.
+
+```bash
+ai-driver-safety datasets prepare-yawdd \
+  --input data/yawdd \
+  --participants-info data/yawdd/ParticipantsInformation.csv \
+  --out data/manifests/yawdd.json
+
+ai-driver-safety analyze \
+  --video "data/yawdd/mirror-camera/23-FemaleNoGlasses-Talking&Yawning.avi" \
+  --config configs/default.yaml \
+  --out runs/yawdd-23
+```
+
+YawDD allows local research use of all videos, but public screenshots are controlled per participant. Do not commit full YawDD videos or annotated derivatives to this repo unless the dataset terms and participant metadata explicitly allow it.
+
+### Physiological Drowsiness Sensors
+
+DD-Database is the primary sensor-drowsiness track. It contains EEG, EOG, ECG, and annotation EDF files collected during a driving-simulator protocol designed to induce drowsiness.
+
+The repo includes a real Dryad file-index sample at `docs/sample-output/dd-database-dryad-files.json`; it is metadata only, not raw physiological data.
+
+```bash
+ai-driver-safety datasets dd-index --out data/dd-database/dryad-files.json
+ai-driver-safety datasets prepare-dd \
+  --input data/dd-database/raw \
+  --download-index data/dd-database/dryad-files.json \
+  --out data/manifests/dd-database.json
+
+python -m pip install -e ".[datasets]"
+ai-driver-safety datasets dd-events \
+  --input data/dd-database/raw \
+  --out runs/dd-database-sensors
+```
+
+### Real Car Sensor Telemetry
+
+UAH-DriveSet is the primary car-sensor validation track. It contains real naturalistic driving sessions with smartphone accelerometer, GPS, lane, vehicle, OpenStreetMap, behavior labels, and trip videos.
+
+```bash
+ai-driver-safety datasets prepare-uah \
+  --input data/uah-driveset \
+  --out data/manifests/uah-driveset.json
+
+ai-driver-safety datasets uah-events \
+  --input data/uah-driveset \
+  --out runs/uah-driveset-sensors
+```
+
+Other useful benchmarks remain supported as future evaluation tracks:
 
 - NTHU Driver Drowsiness Detection Dataset
-- YawDD
 - State Farm Distracted Driver Detection
 - Drive&Act
 
@@ -147,4 +199,3 @@ pytest
 ## Safety Note
 
 AI Driver Safety can support research, prototyping, and product demos. It should not be presented as a certified automotive safety system, and it should not be used as the only safety layer in a real vehicle.
-

@@ -1,0 +1,213 @@
+{
+  "dataset": "dd-database",
+  "doi": "10.5061/dryad.5tb2rbp9c",
+  "file_count": 41,
+  "files": [
+    {
+      "filename": "01M_1_annotations.edf",
+      "size_bytes": 1312,
+      "download_url": "https://datadryad.org/api/v2/files/2523037/download"
+    },
+    {
+      "filename": "01M_1.edf",
+      "size_bytes": 13092608,
+      "download_url": "https://datadryad.org/api/v2/files/2523038/download"
+    },
+    {
+      "filename": "01M_2_annotations.edf",
+      "size_bytes": 7124,
+      "download_url": "https://datadryad.org/api/v2/files/2523039/download"
+    },
+    {
+      "filename": "01M_2.edf",
+      "size_bytes": 13038848,
+      "download_url": "https://datadryad.org/api/v2/files/2523041/download"
+    },
+    {
+      "filename": "02F_1_annotations.edf",
+      "size_bytes": 4730,
+      "download_url": "https://datadryad.org/api/v2/files/2523040/download"
+    },
+    {
+      "filename": "02F_1.edf",
+      "size_bytes": 13227008,
+      "download_url": "https://datadryad.org/api/v2/files/2523043/download"
+    },
+    {
+      "filename": "02F_2_annotations.edf",
+      "size_bytes": 3818,
+      "download_url": "https://datadryad.org/api/v2/files/2523042/download"
+    },
+    {
+      "filename": "02F_2.edf",
+      "size_bytes": 13011968,
+      "download_url": "https://datadryad.org/api/v2/files/2523046/download"
+    },
+    {
+      "filename": "03F_1_annotations.edf",
+      "size_bytes": 3232,
+      "download_url": "https://datadryad.org/api/v2/files/2523044/download"
+    },
+    {
+      "filename": "03F_1.edf",
+      "size_bytes": 13092608,
+      "download_url": "https://datadryad.org/api/v2/files/2523045/download"
+    },
+    {
+      "filename": "03F_2_annotations.edf",
+      "size_bytes": 11456,
+      "download_url": "https://datadryad.org/api/v2/files/2523047/download"
+    },
+    {
+      "filename": "03F_2.edf",
+      "size_bytes": 13173248,
+      "download_url": "https://datadryad.org/api/v2/files/2523050/download"
+    },
+    {
+      "filename": "04M_1_annotations.edf",
+      "size_bytes": 4616,
+      "download_url": "https://datadryad.org/api/v2/files/2523048/download"
+    },
+    {
+      "filename": "04M_1.edf",
+      "size_bytes": 12420608,
+      "download_url": "https://datadryad.org/api/v2/files/2523051/download"
+    },
+    {
+      "filename": "04M_2_annotations.edf",
+      "size_bytes": 5756,
+      "download_url": "https://datadryad.org/api/v2/files/2523049/download"
+    },
+    {
+      "filename": "04M_2.edf",
+      "size_bytes": 12931328,
+      "download_url": "https://datadryad.org/api/v2/files/2523054/download"
+    },
+    {
+      "filename": "05M_1_annotations.edf",
+      "size_bytes": 3362,
+      "download_url": "https://datadryad.org/api/v2/files/2523052/download"
+    },
+    {
+      "filename": "05M_1.edf",
+      "size_bytes": 12985088,
+      "download_url": "https://datadryad.org/api/v2/files/2523058/download"
+    },
+    {
+      "filename": "05M_2_annotations.edf",
+      "size_bytes": 4958,
+      "download_url": "https://datadryad.org/api/v2/files/2523053/download"
+    },
+    {
+      "filename": "05M_2.edf",
+      "size_bytes": 12985088,
+      "download_url": "https://datadryad.org/api/v2/files/2523056/download"
+    },
+    {
+      "filename": "06M_1_annotations.edf",
+      "size_bytes": 4616,
+      "download_url": "https://datadryad.org/api/v2/files/2523055/download"
+    },
+    {
+      "filename": "06M_1.edf",
+      "size_bytes": 12931328,
+      "download_url": "https://datadryad.org/api/v2/files/2523057/download"
+    },
+    {
+      "filename": "06M_2_annotations.edf",
+      "size_bytes": 2678,
+      "download_url": "https://datadryad.org/api/v2/files/2523059/download"
+    },
+    {
+      "filename": "06M_2.edf",
+      "size_bytes": 13146368,
+      "download_url": "https://datadryad.org/api/v2/files/2523066/download"
+    },
+    {
+      "filename": "07F_1_annotations.edf",
+      "size_bytes": 10772,
+      "download_url": "https://datadryad.org/api/v2/files/2523060/download"
+    },
+    {
+      "filename": "07F_1.edf",
+      "size_bytes": 13065728,
+      "download_url": "https://datadryad.org/api/v2/files/2523063/download"
+    },
+    {
+      "filename": "07F_2_annotations.edf",
+      "size_bytes": 18980,
+      "download_url": "https://datadryad.org/api/v2/files/2523061/download"
+    },
+    {
+      "filename": "07F_2.edf",
+      "size_bytes": 13038848,
+      "download_url": "https://datadryad.org/api/v2/files/2523065/download"
+    },
+    {
+      "filename": "08M_1_annotations.edf",
+      "size_bytes": 1082,
+      "download_url": "https://datadryad.org/api/v2/files/2523062/download"
+    },
+    {
+      "filename": "08M_1.edf",
+      "size_bytes": 12958208,
+      "download_url": "https://datadryad.org/api/v2/files/2523067/download"
+    },
+    {
+      "filename": "08M_2_annotations.edf",
+      "size_bytes": 1424,
+      "download_url": "https://datadryad.org/api/v2/files/2523064/download"
+    },
+    {
+      "filename": "08M_2.edf",
+      "size_bytes": 12958208,
+      "download_url": "https://datadryad.org/api/v2/files/2523072/download"
+    },
+    {
+      "filename": "09M_1_annotations.edf",
+      "size_bytes": 740,
+      "download_url": "https://datadryad.org/api/v2/files/2523068/download"
+    },
+    {
+      "filename": "09M_1.edf",
+      "size_bytes": 12958208,
+      "download_url": "https://datadryad.org/api/v2/files/2523070/download"
+    },
+    {
+      "filename": "09M_2_annotations.edf",
+      "size_bytes": 1082,
+      "download_url": "https://datadryad.org/api/v2/files/2523069/download"
+    },
+    {
+      "filename": "09M_2.edf",
+      "size_bytes": 12985088,
+      "download_url": "https://datadryad.org/api/v2/files/2523076/download"
+    },
+    {
+      "filename": "10M_1_annotations.edf",
+      "size_bytes": 854,
+      "download_url": "https://datadryad.org/api/v2/files/2523071/download"
+    },
+    {
+      "filename": "10M_1.edf",
+      "size_bytes": 12958208,
+      "download_url": "https://datadryad.org/api/v2/files/2523073/download"
+    },
+    {
+      "filename": "10M_2_annotations.edf",
+      "size_bytes": 1424,
+      "download_url": "https://datadryad.org/api/v2/files/2523074/download"
+    },
+    {
+      "filename": "10M_2.edf",
+      "size_bytes": 12985088,
+      "download_url": "https://datadryad.org/api/v2/files/2523077/download"
+    },
+    {
+      "filename": "README.md",
+      "size_bytes": 5690,
+      "download_url": "https://datadryad.org/api/v2/files/2523075/download"
+    }
+  ],
+  "note": "Download raw EDF files from Dryad into data/dd-database/raw. API download links can require browser/session handling; this index is kept for reproducibility."
+}

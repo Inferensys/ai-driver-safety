@@ -12,6 +12,11 @@ DEFAULT_SIGNAL_WEIGHTS = {
     "distracted": 0.34,
     "phone_use": 0.64,
     "face_missing": 0.24,
+    "sensor_drowsiness": 0.58,
+    "lane_drift": 0.32,
+    "short_time_to_collision": 0.48,
+    "hard_maneuver": 0.26,
+    "speeding": 0.2,
 }
 
 
@@ -88,4 +93,3 @@ def _longest_contiguous_interval(timestamps: list[float]) -> float:
             start = timestamp
         previous = timestamp
     return max(longest, previous - start)
-
