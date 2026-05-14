@@ -2,13 +2,14 @@
 
 AI Driver Safety is organized around one practical path: turn cabin video and optional sensor data into a driver-risk timeline.
 
-## Flow
-
-```text
-FrameSource -> DriverSafetyPipeline -> DetectionEvent[] -> Driver Risk Fusion -> Reports
-                         |                       |
-                         |                       +-> AlertPolicy
-                         +-> FaceDetector / ObjectDetector
+```mermaid
+graph TD
+    A[FrameSource] --> B[DriverSafetyPipeline]
+    B --> C[FaceDetector / ObjectDetector]
+    B --> D[DetectionEvent]
+    D --> E[Driver Risk Fusion]
+    E --> F[AlertPolicy]
+    E --> G[Reports]
 ```
 
 ## Components

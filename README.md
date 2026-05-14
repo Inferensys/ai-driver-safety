@@ -1,13 +1,22 @@
 ![Inferensys Driver Monitoring](docs/cover.svg)
 
-# Deep Learning based Driver Monitoring System for Activity and Object Recognition
+# Deep-Learning based Driver Monitoring
 
 ## Why?
 In recent years there has been a lot of focus on developing driver monitoring software for integration in passenger cars and other vehicles to facilitate better safety and other functions that improve the user experience. By studying a person’s posture and body movements, intelligent interior vehicle algorithms can draw conclusions about a person’s alertness, attention and focus. Tomorrow’s cabin sensing features will include detection of passenger position, safety belt status and forgotten objects, as well as enabling multimodal functionality such as deeper AI and mood recognition.So the car is able to seamlessly transfer control of the vehicle to an awake and able driver, call for help in a medical emergency, or offer to play the perfect song for the moment.
 
 
-## Implementation Plan:
-Implementation is divided into the following parts:
+## Introduction
+
+We present a **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use. By combining computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring - we can show when the driver is at risk and alert them before it becomes a problem. The system is designed for real-time use on edge devices, and the code is open source for research and demo purposes.
+
+> Research and demo software only. This is not certified automotive safety software.
+
+
+## Implementation
+
+Using Computer Vision & Deep Learning, we can analyze the driver’s behavior and detect signs of fatigue, distraction, or other unsafe conditions. The system can monitor the driver’s eye movements, facial expressions, and body posture to identify potential risks. For example, if the driver’s eyes are closed for an extended period or if they are yawning frequently, the system can alert them to take a break. Additionally, if the driver is using their phone while driving, the system can detect this behavior and provide warnings to encourage safer driving habits.
+
 
 1. Data acquisition : A camera module is attached in front of the user which is continuously monitoring the activity of the driver. The hand-grip heart rate sensor embedded onto the steering wheel gives us the bpm of the driver.
 
@@ -17,24 +26,13 @@ Implementation is divided into the following parts:
 
 4. Classification: Fuzzy classifier to classify the driver’s state by scaling drowsiness, distraction, yawn, eye closure, and joy in real-time based on the threshold values.
 
-## Abstract
-
-We present a **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use. By combining computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring - we can show when the driver is at risk and alert them before it becomes a problem. The system is designed for real-time use on edge devices, and the code is open source for research and demo purposes.
-
-> Research and demo software only. This is not certified automotive safety software.
-
-
-
-## Solution
-
-Using Computer Vision & Deep Learning, we can analyze the driver’s behavior and detect signs of fatigue, distraction, or other unsafe conditions. The system can monitor the driver’s eye movements, facial expressions, and body posture to identify potential risks. For example, if the driver’s eyes are closed for an extended period or if they are yawning frequently, the system can alert them to take a break. Additionally, if the driver is using their phone while driving, the system can detect this behavior and provide warnings to encourage safer driving habits.
-
-
 ![AI Driver Safety real human demo](docs/demo/real-human-demo.gif)
 
 | Source | Duration | Frames | Detector | Result |
 | --- | ---: | ---: | --- | --- |
 | Driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `128 FPS` |
+
+Implementation is divided into the following parts:
 
 ### 1. Driver identification:
 Identification of the driver in order to allow the vehicle to automatically restore its preferences and settings.
@@ -43,7 +41,7 @@ Identification of the driver in order to allow the vehicle to automatically rest
 2.1 Deep learning model for recognition of continuous driver’s activity.
 2.2 This includes activities such as driver talking on the phone, eating while driving the vehicle. These activities will alert the system and make the driver more aware of the dangerous situation.
 
-### 3.Detecting levels of driver impairment:
+### 3. Detecting levels of driver impairment:
 3.1 Using a camera and microphone for detecting drowsiness, distraction, yawn, eye closure, and joy in real-time.
 3.2 Monitor driver fatigue and alert him when potential drowsiness situation is detected.
 3.3 Monitor driver attentiveness by ensuring he’s keeping his eyes on the road and that he is aware of any dangerous situation.
@@ -65,15 +63,15 @@ Implementations of all Classifications Using Fuzzy Logic model
 Fuzzy Logic Model-A branch of Artificial Intelligence (AI), which will characterize the uncertainty in the data by adding truth and false concepts from common logic to a machine-generated model.
 
 Aggressive Driving Style Criteria: (Input Variables)
-1.Sudden Accelerations or Decelerations
-2.Sudden Braking
-3.Sharp Turns
-4.Set of events like start, stop, speed and turns
-5.Maximum and minimum rpm of the engine
-6.Number of Red light Jumps
-7.Number of Tailgating cases
-8.Number of Aggressive Honking
-9.Number of Wrong side Overtaking
+1. Sudden Accelerations or Decelerations
+2. Sudden Braking
+3. Sharp Turns
+4. Set of events like start, stop, speed and turns
+5. Maximum and minimum rpm of the engine
+6. Number of Red light Jumps
+7. Number of Tailgating cases
+8. Number of Aggressive Honking
+9. Number of Wrong side Overtaking
 
 Steps Involved
 1. Fuzzification:
@@ -85,27 +83,31 @@ This stage defines the membership functions and linguistic variables of the inpu
 The final conversion of the inputs to crisp results.
 
 
+## Demo
 
-## Phone-use Detection
+### Eye closure and yawn events
 
-Clip 4 uses the optional ONNX object detector on the same cabin video pipeline. The model flags the visible phone as `cell phone`, converts it into `phone_use`, and feeds it into the same risk timeline.
+![Eye closure and yawn events](docs/demo/real-human-clip-1.gif)
+
+`eyes_closed: 57`, `drowsy: 20`, `yawning: 12`
+
+### Drowsiness & Yawn timelines
+
+![](docs/demo/real-human-clip-2.gif)
+`eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`
+
+### Head drop and distracted intervals
+
+![Clip 3: head drop and distracted intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `distracted: 65` |
+
+
+### Phone-use Detection
+
+Uses the  MediaPipe Face Landmarker + ONNX YOLO11s COCO detector on the same cabin video pipeline. The model flags the visible phone as `cell phone`, converts it into `phone_use`, and feeds it into the same risk timeline.
 
 ![AI Driver Safety phone-use detection](docs/demo/real-human-phone-use.gif)
 
-| Source | Detector | Result |
-| --- | --- | --- |
-| Driver cabin clip 4 | MediaPipe Face Landmarker + ONNX YOLO11s COCO detector | `phone_use: 85` across a `3.5s` interval, `eyes_closed: 66`, `drowsy: 38`, `distracted: 79`; object provider `onnx`; estimated runtime `16 FPS` |
-
-## Demo
-
-| Clip | Output | What the system flags |
-| --- | --- | --- |
-| 1 | ![Clip 1: eye closure and yawn events](docs/demo/real-human-clip-1.gif) | `eyes_closed: 57`, `drowsy: 20`, `yawning: 12` |
-| 2 | ![Clip 2: strongest drowsiness and yawn timeline](docs/demo/real-human-clip-2.gif) | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29` |
-| 3 | ![Clip 3: head drop and distracted intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `distracted: 65` |
-| 4 | ![Clip 4: phone use, drowsy posture, and distracted window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `distracted: 79`, `phone_use: 85` |
-
-![AI Driver Safety real clip batch](docs/screenshots/real-human-clip-batch.png)
+`phone_use: 85` across a `3.5s` interval, `eyes_closed: 66`, `drowsy: 38`, `distracted: 79`; object provider `onnx`; estimated runtime `16 FPS`
 
 ## What A Car/OEM Reader Sees
 
@@ -125,6 +127,9 @@ The scorer is `driver-risk-fusion-v1`.
 4. **Evidence fusion**: signals are combined with a noisy-OR rule, so multiple moderate cues can raise risk without naive addition.
 5. **Cross-signal boosts**: risk increases when combinations matter, such as drowsy + eyes closed, drowsy + yawning, visual fatigue + physiological fatigue, visual fatigue + vehicle risk, or distraction + short time-to-collision.
 6. **Explainable outputs**: every alert is written as a `DetectionEvent` with timestamp, frame index, signal, score, severity, bounding box, landmarks, and metadata.
+
+![AI Driver Safety real clip batch](docs/screenshots/real-human-clip-batch.png)
+
 
 This keeps the original fuzzy-logic concept practical. The system can show why risk rose.
 
@@ -156,49 +161,13 @@ ai-driver-safety analyze \
   --out runs/real-human-demo
 ```
 
-Analyze with phone-use detection:
-
-```bash
-ai-driver-safety analyze \
-  --video data/approved-demo/driver-phone-use.mp4 \
-  --config configs/phone-demo.yaml \
-  --out runs/phone-use-demo
-```
-
-Open the generated report:
-
-```bash
-open runs/real-human-demo/report.html
-```
-
-Regenerate README media from an approved clip:
-
-```bash
-python scripts/make_real_demo_assets.py \
-  --video data/approved-demo/driver-yawning.mp4 \
-  --config configs/default.yaml \
-  --out-run runs/real-human-demo \
-  --publish-docs \
-  --source-name "Approved real driver/yawning clip" \
-  --license-note "Approved for public README demo use"
-```
-
 Webcam mode:
 
 ```bash
 ai-driver-safety run --source webcam --config configs/default.yaml
 ```
 
-## CLI
-
-```bash
-ai-driver-safety analyze --video data/approved-demo/driver-yawning.mp4 --out runs/real-human-demo
-ai-driver-safety analyze --video data/approved-demo/driver-phone-use.mp4 --config configs/phone-demo.yaml --out runs/phone-use-demo
-ai-driver-safety run --source webcam --config configs/default.yaml
-ai-driver-safety report --run runs/real-human-demo --format html,json,csv
-```
-
-## Python API
+Python API:
 
 ```python
 from driver_safety import create_pipeline, load_config
@@ -209,19 +178,6 @@ pipeline = create_pipeline(config)
 result = pipeline.process_frame(FramePacket(frame=frame, timestamp=0.0, frame_index=0))
 ```
 
-## Project Shape
-
-```text
-driver_safety/
-  core/        events, smoothing, alert cooldowns, driver-risk fusion
-  vision/      MediaPipe landmarks, EAR/MAR metrics, head offset, ONNX object hook
-  io/          video/webcam sources and annotated video writer
-  runtime/     analyze/run loops and latency metrics
-  reporting/   JSON, CSV, HTML report exports
-configs/       default, phone-demo, night-driving, and edge CPU profiles
-docs/          architecture, edge notes, demo assets
-legacy/        original webcam scripts, Haar assets, heartbeat sketch
-```
 
 ## Models
 
@@ -231,7 +187,7 @@ Model weights are not committed.
 python scripts/download_models.py --mediapipe-face
 ```
 
-Optional ONNX phone/object detector:
+ONNX phone/object detector:
 
 ```bash
 python -m pip install ultralytics onnx onnxslim onnxruntime
