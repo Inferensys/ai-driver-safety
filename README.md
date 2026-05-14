@@ -1,6 +1,6 @@
 # AI Driver Safety
 
-AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, phone use, and missing-face events.
+AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, phone use, and driver-not-visible distraction events.
 
 The core idea stays close to the original repo: combine computer vision, physiological drowsiness signals, vehicle telemetry, and fuzzy-style risk scoring. The current release proves the vision path first with real human cabin recordings, then keeps sensor and car-data adapters ready for dataset validation.
 
@@ -16,7 +16,7 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 
 | Source | Duration | Frames | Detector | Result |
 | --- | ---: | ---: | --- | --- |
-| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `face_missing: 29`; longest unsafe window `3.42s`; estimated runtime `126 FPS` |
+| User-approved driver cabin clip | 7.96s | 192 | MediaPipe Face Landmarker | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29`; longest unsafe window `3.42s`; estimated runtime `124 FPS` |
 
 **Artifacts**
 
@@ -31,9 +31,9 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 | Clip | Output | What the system flags |
 | --- | --- | --- |
 | 1 | ![Clip 1: eye closure and yawn events](docs/demo/real-human-clip-1.gif) | `eyes_closed: 57`, `drowsy: 20`, `yawning: 12` |
-| 2 | ![Clip 2: strongest drowsiness and yawn timeline](docs/demo/real-human-clip-2.gif) | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `face_missing: 29` |
-| 3 | ![Clip 3: head drop and face-missing intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `face_missing: 65` |
-| 4 | ![Clip 4: drowsy posture and face-missing window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `face_missing: 79` |
+| 2 | ![Clip 2: strongest drowsiness and yawn timeline](docs/demo/real-human-clip-2.gif) | `eyes_closed: 111`, `drowsy: 45`, `yawning: 23`, `distracted: 29` |
+| 3 | ![Clip 3: head drop and distracted intervals](docs/demo/real-human-clip-3.gif) | `eyes_closed: 59`, `drowsy: 9`, `distracted: 65` |
+| 4 | ![Clip 4: drowsy posture and distracted window](docs/demo/real-human-clip-4.gif) | `eyes_closed: 66`, `drowsy: 38`, `distracted: 79` |
 
 ![AI Driver Safety real clip batch](docs/screenshots/real-human-clip-batch.png)
 
@@ -50,7 +50,7 @@ The README demo uses approved human cabin clips. No generated cabin animation is
 The scorer is `driver-risk-fusion-v1`.
 
 1. **Vision evidence**: MediaPipe landmarks produce eye aspect ratio, mouth aspect ratio, head offset, face presence, and optional ONNX phone/object detections.
-2. **Temporal gating**: frame counters prevent one noisy frame from becoming an alert. Eye closure, yawn, distraction, and missing-face states must persist for configured windows.
+2. **Temporal gating**: frame counters prevent one noisy frame from becoming an alert. Eye closure, yawn, distraction, and driver-not-visible states must persist for configured windows.
 3. **Signal smoothing**: raw per-frame signals are smoothed before risk scoring.
 4. **Evidence fusion**: signals are combined with a noisy-OR rule, so multiple moderate cues can raise risk without naive addition.
 5. **Cross-signal boosts**: risk increases when combinations matter, such as drowsy + eyes closed, drowsy + yawning, visual fatigue + physiological fatigue, visual fatigue + vehicle risk, or distraction + short time-to-collision.
@@ -159,7 +159,7 @@ Raw dataset media stays under `data/` and out of git. The repo commits analysis 
 
 | Dataset | Why it matters here | Signals used by this repo | Output |
 | --- | --- | --- | --- |
-| NITYMED | Real in-car yawning and microsleep video for README-grade demos | `yawning`, `eyes_closed`, `face_missing`, microsleep review windows | annotated GIF/MP4 after access approval |
+| NITYMED | Real in-car yawning and microsleep video for README-grade demos | `yawning`, `eyes_closed`, `distracted`, microsleep review windows | annotated GIF/MP4 after access approval |
 | YawDD | Real human yawning benchmark across in-car faces, eyewear, and lighting | `mouth_aspect_ratio`, `yawning`, face tracking quality | local annotated video and event timeline |
 | DD-Database | Physiological drowsiness data from EEG, EOG, ECG, and annotations | `sensor_drowsiness`, EOG eye-movement proxy, ECG heart-rate proxy | `sensor_events.json`, `sensor_summary.json` |
 | UAH-DriveSet | Real car telemetry for driving-style risk | `lane_drift`, `short_time_to_collision`, `hard_maneuver`, `speeding` | `vehicle_events.json`, `vehicle_summary.json` |

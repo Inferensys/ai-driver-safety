@@ -11,7 +11,6 @@ DEFAULT_SIGNAL_WEIGHTS = {
     "yawning": 0.22,
     "distracted": 0.34,
     "phone_use": 0.64,
-    "face_missing": 0.24,
     "sensor_drowsiness": 0.58,
     "lane_drift": 0.32,
     "short_time_to_collision": 0.48,
@@ -46,7 +45,6 @@ class RiskScorer:
             "visual_distraction": max(
                 _clamp(signals.get("distracted", 0.0)),
                 _clamp(signals.get("phone_use", 0.0)),
-                _clamp(signals.get("face_missing", 0.0)) * 0.6,
             ),
             "physiology_fatigue": _clamp(signals.get("sensor_drowsiness", 0.0)),
             "vehicle_risk": max(
@@ -82,7 +80,6 @@ class RiskScorer:
             DriverState.EYES_CLOSED,
             DriverState.YAWNING,
             DriverState.DISTRACTED,
-            DriverState.FACE_MISSING,
         ]
         active = {event.state for event in events}
         for state in priority:

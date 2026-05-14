@@ -49,7 +49,6 @@ class DriverSafetyPipeline:
             "yawning": 0.0,
             "distracted": 0.0,
             "phone_use": 0.0,
-            "face_missing": 0.0,
         }
         events: list[DetectionEvent] = []
         face_bbox: tuple[int, int, int, int] | None = None
@@ -59,15 +58,15 @@ class DriverSafetyPipeline:
         if not face_observations:
             self._missing_face_counter += 1
             if self._missing_face_counter >= self.config.thresholds.missing_face_frames:
-                raw_signals["face_missing"] = 1.0
+                raw_signals["distracted"] = 1.0
                 events.append(
                     self._event(
                         packet,
-                        "face_missing",
-                        DriverState.FACE_MISSING,
-                        0.7,
+                        "distracted",
+                        DriverState.DISTRACTED,
+                        1.0,
                         Severity.WARNING,
-                        "Driver face is missing from the frame",
+                        "Driver not visible; marked distracted",
                     )
                 )
         else:
@@ -140,7 +139,6 @@ class DriverSafetyPipeline:
             "yawning": min(1.0, self._yawn_counter / max(1, thresholds.yawn_frames)),
             "distracted": min(1.0, self._distracted_counter / max(1, thresholds.distracted_frames)),
             "phone_use": 0.0,
-            "face_missing": 0.0,
             "ear": round(ear, 4),
             "mar": round(mar, 4),
             "head_offset": round(head_offset, 4),

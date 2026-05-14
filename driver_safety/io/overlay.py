@@ -13,9 +13,8 @@ STATE_COLORS = {
     DriverState.EYES_CLOSED: (36, 174, 222),
     DriverState.DROWSY: (38, 64, 230),
     DriverState.YAWNING: (36, 174, 222),
-    DriverState.DISTRACTED: (48, 156, 232),
+    DriverState.DISTRACTED: (42, 42, 238),
     DriverState.PHONE_USE: (42, 42, 238),
-    DriverState.FACE_MISSING: (88, 88, 88),
 }
 
 
@@ -135,6 +134,14 @@ def _draw_signal_bars(
             frame,
             (start_x + 106, y),
             (start_x + 106 + int(90 * value), y + 12),
-            (62, 197, 124) if value < 0.45 else (46, 167, 235),
+            _signal_color(label, value),
             -1,
         )
+
+
+def _signal_color(label: str, value: float) -> tuple[int, int, int]:
+    if value < 0.45:
+        return (62, 197, 124)
+    if label == "distracted":
+        return (42, 42, 238)
+    return (46, 167, 235)

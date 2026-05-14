@@ -46,7 +46,7 @@ class FixtureFaceLandmarkDetector:
         frame = packet.frame
         h, w = frame.shape[:2]
         scenario = _scenario_for_timestamp(packet.timestamp)
-        if scenario == "face_missing":
+        if scenario == "driver_absent":
             return []
         face_w = int(w * 0.26)
         face_h = int(h * 0.42)
@@ -215,7 +215,7 @@ def _scenario_for_timestamp(timestamp: float) -> str:
     if 29 <= phase < 35:
         return "distracted"
     if 47 <= phase < 51:
-        return "face_missing"
+        return "driver_absent"
     return "attentive"
 
 

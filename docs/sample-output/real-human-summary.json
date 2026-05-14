@@ -1,12 +1,12 @@
 {
-  "session_id": "clip_2_202605141455-20260514T100949Z",
+  "session_id": "clip_2_202605141455-20260514T102525Z",
   "source": "/Users/prasad/Downloads/Driver performing monitoring act\u2026/clip_2_202605141455.mp4",
   "duration_seconds": 7.958,
   "processed_frames": 192,
   "event_counts": {
+    "distracted": 29,
     "drowsy": 45,
     "eyes_closed": 111,
-    "face_missing": 29,
     "yawning": 23
   },
   "risk_timeline": [
@@ -404,135 +404,135 @@
     },
     {
       "timestamp": 4.083,
-      "risk_score": 0.048
+      "risk_score": 0.068
     },
     {
       "timestamp": 4.125,
-      "risk_score": 0.096
+      "risk_score": 0.136
     },
     {
       "timestamp": 4.167,
-      "risk_score": 0.144
+      "risk_score": 0.204
     },
     {
       "timestamp": 4.208,
-      "risk_score": 0.192
+      "risk_score": 0.272
     },
     {
       "timestamp": 4.25,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.292,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.333,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.375,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.417,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.458,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.5,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.542,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.583,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.625,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.667,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.708,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.75,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.792,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.833,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.875,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.917,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 4.958,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.0,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.042,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.083,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.125,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.167,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.208,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.25,
-      "risk_score": 0.24
+      "risk_score": 0.34
     },
     {
       "timestamp": 5.292,
-      "risk_score": 0.3283
+      "risk_score": 0.3948
     },
     {
       "timestamp": 5.333,
-      "risk_score": 0.4202
+      "risk_score": 0.4608
     },
     {
       "timestamp": 5.375,
-      "risk_score": 0.5136
+      "risk_score": 0.5351
     },
     {
       "timestamp": 5.417,
-      "risk_score": 0.6863
+      "risk_score": 0.6946
     },
     {
       "timestamp": 5.458,
@@ -781,16 +781,16 @@
   ],
   "longest_unsafe_interval_seconds": 3.417,
   "confidence_distribution": {
+    "distracted": 1.0,
     "drowsy": 1.0,
     "eyes_closed": 1.0,
-    "face_missing": 0.7,
     "yawning": 1.0
   },
   "metrics": {
     "source_fps": 24.0,
-    "avg_latency_ms": 7.926,
-    "p95_latency_ms": 9.061,
-    "estimated_runtime_fps": 126.16,
+    "avg_latency_ms": 8.085,
+    "p95_latency_ms": 9.499,
+    "estimated_runtime_fps": 123.68,
     "face_provider": "mediapipe",
     "object_provider": "none",
     "fusion_model": "driver-risk-fusion-v1"

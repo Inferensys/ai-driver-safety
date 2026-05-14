@@ -15,9 +15,9 @@
       "longest_unsafe_interval_seconds": 1.833,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 9.018,
-        "p95_latency_ms": 10.568,
-        "estimated_runtime_fps": 110.89,
+        "avg_latency_ms": 8.951,
+        "p95_latency_ms": 10.658,
+        "estimated_runtime_fps": 111.72,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -31,17 +31,17 @@
       "duration_seconds": 7.958,
       "processed_frames": 192,
       "event_counts": {
+        "distracted": 29,
         "drowsy": 45,
         "eyes_closed": 111,
-        "face_missing": 29,
         "yawning": 23
       },
       "longest_unsafe_interval_seconds": 3.417,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 7.926,
-        "p95_latency_ms": 9.061,
-        "estimated_runtime_fps": 126.16,
+        "avg_latency_ms": 8.085,
+        "p95_latency_ms": 9.499,
+        "estimated_runtime_fps": 123.68,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -55,16 +55,16 @@
       "duration_seconds": 7.958,
       "processed_frames": 192,
       "event_counts": {
+        "distracted": 65,
         "drowsy": 9,
-        "eyes_closed": 59,
-        "face_missing": 65
+        "eyes_closed": 59
       },
       "longest_unsafe_interval_seconds": 1.333,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 6.822,
-        "p95_latency_ms": 10.806,
-        "estimated_runtime_fps": 146.59,
+        "avg_latency_ms": 7.327,
+        "p95_latency_ms": 12.83,
+        "estimated_runtime_fps": 136.48,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
@@ -78,16 +78,16 @@
       "duration_seconds": 7.958,
       "processed_frames": 192,
       "event_counts": {
+        "distracted": 79,
         "drowsy": 38,
-        "eyes_closed": 66,
-        "face_missing": 79
+        "eyes_closed": 66
       },
       "longest_unsafe_interval_seconds": 2.542,
       "metrics": {
         "source_fps": 24.0,
-        "avg_latency_ms": 6.529,
-        "p95_latency_ms": 9.419,
-        "estimated_runtime_fps": 153.17,
+        "avg_latency_ms": 6.841,
+        "p95_latency_ms": 10.827,
+        "estimated_runtime_fps": 146.17,
         "face_provider": "mediapipe",
         "object_provider": "none",
         "fusion_model": "driver-risk-fusion-v1"
