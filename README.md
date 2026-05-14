@@ -1,5 +1,3 @@
-# AI Driver Safety
-
 ![Inferensys Driver Monitoring](docs/cover.svg)
 
 AI Driver Safety is a practical **driver monitoring system** for assisted and autonomous vehicle cabins. It turns cabin video into a frame-by-frame risk timeline for eye closure, yawning, drowsiness, distraction, and phone use.

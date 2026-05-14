@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 import numpy as np
+from numpy.typing import NDArray
 
 from driver_safety.config import DriverSafetyConfig
 from driver_safety.core.models import FramePacket
+
+Array = NDArray[Any]
 
 
 @dataclass(slots=True)
@@ -84,12 +87,12 @@ def _load_labels(path: Path) -> list[str]:
     return [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def _letterbox(frame: np.ndarray, size: int) -> np.ndarray:
+def _letterbox(frame: Array, size: int) -> Array:
     return np.asarray(__import__("cv2").resize(frame, (size, size)))
 
 
 def _parse_yolo_like(
-    output: np.ndarray,
+    output: Array,
     frame_width: int,
     frame_height: int,
     labels: list[str],

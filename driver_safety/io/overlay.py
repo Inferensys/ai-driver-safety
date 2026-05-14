@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import cv2
 import numpy as np
+from numpy.typing import NDArray
 
 from driver_safety.core.models import DriverState, ProcessedFrame
+
+Array = NDArray[Any]
 
 STATE_COLORS = {
     DriverState.ATTENTIVE: (76, 190, 118),
@@ -33,14 +36,14 @@ class AnnotatedVideoWriter:
         if not self.writer.isOpened():
             raise RuntimeError(f"Unable to open video writer: {self.path}")
 
-    def write(self, frame: np.ndarray) -> None:
+    def write(self, frame: Array) -> None:
         self.writer.write(frame)
 
     def close(self) -> None:
         self.writer.release()
 
 
-def draw_overlay(processed: ProcessedFrame) -> np.ndarray:
+def draw_overlay(processed: ProcessedFrame) -> Array:
     frame = processed.packet.frame.copy()
     h, w = frame.shape[:2]
     state_color = STATE_COLORS.get(processed.state, (255, 255, 255))
@@ -97,16 +100,16 @@ def draw_overlay(processed: ProcessedFrame) -> np.ndarray:
             1,
             cv2.LINE_AA,
         )
-    return cast(np.ndarray, frame)
+    return cast(Array, frame)
 
 
-def _draw_panel(frame: np.ndarray, x: int, y: int, w: int, h: int, *, alpha: float) -> None:
+def _draw_panel(frame: Array, x: int, y: int, w: int, h: int, *, alpha: float) -> None:
     overlay = frame.copy()
     cv2.rectangle(overlay, (x, y), (x + w, y + h), (18, 22, 23), -1)
     cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
 
 
-def _draw_brand(frame: np.ndarray, x: int, y: int) -> None:
+def _draw_brand(frame: Array, x: int, y: int) -> None:
     logo = _load_logo()
     if logo is None:
         cv2.putText(
@@ -132,16 +135,16 @@ def _draw_brand(frame: np.ndarray, x: int, y: int) -> None:
 
 
 @lru_cache(maxsize=1)
-def _load_logo() -> np.ndarray | None:
+def _load_logo() -> Array | None:
     for path in LOGO_PATHS:
         if path.exists():
             logo = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
             if logo is not None and logo.shape[2] == 4:
-                return cast(np.ndarray, logo)
+                return cast(Array, logo)
     return None
 
 
-def _blend_rgba(frame: np.ndarray, overlay: np.ndarray, x: int, y: int) -> None:
+def _blend_rgba(frame: Array, overlay: Array, x: int, y: int) -> None:
     h, w = overlay.shape[:2]
     frame_h, frame_w = frame.shape[:2]
     if x >= frame_w or y >= frame_h:
@@ -156,9 +159,7 @@ def _blend_rgba(frame: np.ndarray, overlay: np.ndarray, x: int, y: int) -> None:
     frame[y : y + h, x : x + w] = (alpha * logo_rgb + (1.0 - alpha) * region).astype(np.uint8)
 
 
-def _draw_signal_bars(
-    frame: np.ndarray, processed: ProcessedFrame, width: int, height: int
-) -> None:
+def _draw_signal_bars(frame: Array, processed: ProcessedFrame, width: int, height: int) -> None:
     labels = ["eyes_closed", "drowsy", "yawning", "distracted", "phone_use"]
     start_x = max(20, width - 238)
     start_y = 24
